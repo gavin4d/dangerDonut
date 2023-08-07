@@ -1,0 +1,26 @@
+name: Build IDF project
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: espressif/idf:release-v4.0
+    
+    steps:      
+    - name: Create basic project
+      run: cp -r $IDF_PATH/examples/get-started/hello_world $GITHUB_WORKSPACE/project
+        
+    - uses: actions/checkout@v2
+      with:
+        path: project/components/esp32-dshot
+    
+    - name: Compile project
+      run: |
+        cd $GITHUB_WORKSPACE/project
+        . $IDF_PATH/export.sh
+        idf.py build

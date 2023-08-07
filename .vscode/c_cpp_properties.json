@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/components/arduino/tools/sdk/esp32s3/include/newlib/platform_include",
+                "${workspaceFolder}/components/arduino/tools/sdk/esp32/include/newlib/platform_include",
+                "${workspaceFolder}/components/arduino/tools/sdk/esp32c3/include/newlib/platform_include",
+                "${workspaceFolder}/components/arduino/tools/sdk/esp32s2/include/newlib/platform_include",
+                "${workspaceFolder}/components/arduino/tools/sdk/esp32/include/newlib/platform_include",
+                "${workspaceFolder}/components/esp32-dshot-master",
+                "C:/Users/crazz/esp/esp-idf/components/newlib/platform_include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.19041.0",
+            "compilerPath": "${config:idf.toolsPath}/tools/xtensa-esp32s3-elf/esp-2021r2-patch5-8.4.0/xtensa-esp32s3-elf/bin/xtensa-esp32s3-elf-gcc",
+            // "compilerPath": "cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "${default}",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+        }
+    ],
+    "version": 4
+}
