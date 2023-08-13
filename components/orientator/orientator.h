@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <driver/timer.h>
+#include <bitset>
 
 class orientator {
 
@@ -19,24 +20,13 @@ class orientator {
         void fillArray(uint32_t[]);
 
     private:
-        struct Node {
-            uint64_t time;
-            boolean pinState = false;
-            Node *next = nullptr;
-        };
+        static std::bitset<500> IRData; // 500 bit array for incomming IR data
         static uint8_t pin;
-        static Node *head;
-        static boolean lastState;
         double offset;
         uint32_t rotationPeriod = 0; // microseconds
         esp_timer_handle_t update_timer;
 
-        static void IRAM_ATTR IR_sensor_ISR();
-        void deleteLinkedList(Node **deleteHead);
         static void checkIRCallback(void *args);
-
-        // sums the overlap of a linked list with a delayed copy of itself up until a limit
-        uint32_t getCorrelation(Node*, uint64_t, uint32_t);
 
 };
 #endif
