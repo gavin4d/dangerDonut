@@ -6,10 +6,12 @@
 #include <Arduino.h>
 #include <Bluepad32.h>
 #include <DShotRMT.h>
-#include <ESP32Servo.h>
 #include <driver/timer.h>
 #include <Freenove_WS2812_Lib_for_ESP32.h>
+#include <apa102.h>
 #include <uni_log.h>
+
+#include "orientator.h"
 
 #define LED_COUNT 1U
 #define LED_PIN GPIO_NUM_48
@@ -48,15 +50,18 @@ bool controller_idle = false;
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
 
-Freenove_ESP32_WS2812 LED = Freenove_ESP32_WS2812(LED_COUNT, LED_PIN, RMT_CHANNEL, TYPE_GRB);
+Freenove_ESP32_WS2812 LED1 = Freenove_ESP32_WS2812(LED_COUNT, LED_PIN, RMT_CHANNEL, TYPE_GRB);
+//apa102_driver_t LED;
+
+
 
 // This callback gets called any time a new gamepad is connected.
 void onConnectedGamepad(GamepadPtr gp) {
     bool foundEmptySlot = false;
     if (myGamepad == nullptr) {
         Console.printf("CALLBACK: Gamepad is connected\n");
-        LED.set_pixel(0, 10, 0, 0);
-        LED.show();
+        //LED1.set_pixel(0, 10, 0, 0);
+        //LED1.show();
 
         // Additionally, you can get certain gamepad properties like:
         // Model, VID, PID, BTAddr, flags, etc.
@@ -76,8 +81,8 @@ void onDisconnectedGamepad(GamepadPtr gp) {
 
     if (myGamepad == gp) {
         Console.printf("CALLBACK: Gamepad is disconnected\n");
-        LED.set_pixel(0, 5, 0, 10);
-        LED.show();
+        //LED1.set_pixel(0, 5, 0, 10);
+        //LED1.show();
         myGamepad = nullptr;
         foundGamepad = true;
     }
@@ -114,13 +119,16 @@ static void controllerDisconnectedCallback(void *args) {
 
 uint32_t spin_data[128];
 int readCounter = 0;
+int cooldown = 0;
+orientator sensor;
 // Arduino setup function. Runs in CPU 1
 void setup() {
 
-    LED.begin();
-    LED.setBrightness(3);
-    LED.set_pixel(0, 0, 5, 10);
-    LED.show();
+    //LED1.begin();
+    //LED1.setBrightness(3);
+    //LED1.set_pixel(0, 0, 5, 10);
+    //LED1.show();
+    LEDSTRIP.init(1);
     pinMode(10, OUTPUT);
     pinMode(9, INPUT);
     pinMode(18, OUTPUT);
@@ -143,8 +151,11 @@ void setup() {
     esp_timer_create(&create_timer, &test_timer);
     esp_timer_start_periodic(test_timer, 3000000);
 
-    LED.set_pixel(0, 5, 0, 10);
-    LED.show();
+    sensor.setup(9);
+    sensor.setOffset(3);
+
+    //LED1.set_pixel(0, 5, 0, 10);
+    //LED1.show();
 
     for (int i = 0; i < 64; i++) {
         spin_data[i] = (uint64_t)0;
@@ -152,12 +163,21 @@ void setup() {
 }
 
 // Arduino loop function. Runs in CPU 1
+double hue = 0;
 void loop() {
     // This call fetches all the gamepad info from the NINA (ESP32) module.
     // Just call this function in your main loop.
     // The gamepads pointer (the ones received in the callbacks) gets updated
     // automatically.
     BP32.update();
+    //Console.println(sensor.getPeriod());
+    digitalWrite(18, digitalRead(9));
+    hue += 0.1;
+    if (hue >= 360) hue = 0;
+    
+    LEDSTRIP.leds[0] = HSV(hue, 1, 1, 255);
+    
+    LEDSTRIP.update();
 
     if (myGamepad && myGamepad->isConnected()) {
 
@@ -195,8 +215,9 @@ void loop() {
             if (myGamepad->b()) {
                 if (!button_b) {
                     button_b = true;
+                    //sensor.fillArray(spin_data);
                     for (int i = 0; i < 128; i++) {
-                        Console.printf("0x%08lX, ", spin_data[i]);
+                        Console.printf("%d, ", spin_data[i]);
                     }
                     Console.print("\n");
                 }
@@ -205,9 +226,15 @@ void loop() {
             }
 
             if (myGamepad->a()) {
-                if (readCounter/32 < 128) {
-                    spin_data[readCounter/32] |= digitalRead(9) << (readCounter%32);
-                    readCounter++;
+                if (cooldown <= 0) {
+                    if (readCounter < 128) {
+                        sensor.updatePeriod();
+                        spin_data[readCounter] = sensor.getPeriod();
+                        readCounter++;
+                    }
+                    cooldown = 32;
+                } else {
+                    cooldown--;
                 }
             }
 
@@ -217,10 +244,7 @@ void loop() {
         } else {
             setMotorPower(0,0);
         }
-        digitalWrite(18, digitalRead(9));
     }
-    // fffffffe, ffffffff, fe000000, ffffffff, 6ffff, ffffffff, ffffffff, fffe0000, ffffffff, ff800003, ffffffff, fffffffc, d07fffff, ffffffff, ffffffff, fffffffa, ffff7fff, ffffffff, ffffffff, ffffffff, ffffffff, ffffffff, ffffffff, ffffffff, ffffffff, ffffffff, fffff7ff, ffffffaf, ffffffff, ffffffff, ffffffff, ffffffff, ffafffff, 7fffffff, ffffffff, ffffffff, fe001fff, ffffffff, fffff900, ffffffff, f7800000, ffffffff, ffffffff, 0, ffffffe8, ffffffff, ffffffff, ffffffff, ffffffff, 43b908, 0, 0, 0, 0, 0, 0, 0, ffffffff, ffffffff, 7fffff, fffffffc, ffffffff, ffffc000, ffffffff
-    // ffd90000, ffffffff, 0, ffffffdf, 7ffffff, 0, ffffffff, bf, ff000000, ffffffff, 0, fffffdff, 40000000, fffffffc, fffff800, 1ff, ffffc83f, ffffff0, fe800000, 3fff, 3fffff00, ff800bff, fff800, fe080000, 7b, 3ffa000, 37ff77, 0, 107fff34, c4000000, 307fff9, 0, ff30ffff, 0, f0000000, 7fffffff, 0, 0, ffe00000, ffffffff, 0, 0, 0, ffffffff, 3ffffff, 0, 0, fffb2000, ffffffff, 0, 0, ffffff5f, 0, ff680000, 3fdd8ff, 0, ffffcfff, 0, ffffb8f8, 1ff, ff740000, 3fff, fff40000, c9ff
     // The main loop must have some kind of "yield to lower priority task" event.
     // Otherwise the watchdog will get triggered.
     // If your main loop doesn't have one, just add a simple `vTaskDelay(1)`.

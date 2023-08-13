@@ -10,4 +10,4 @@ endif()
 
 idf_component_register(SRCS "${srcs}"
                     INCLUDE_DIRS "."
-                    REQUIRES "${requires}" "DShotRMT" "ESP32Servo" "Freenove_WS2812_Lib_for_ESP32")
+                    REQUIRES "${requires}" "DShotRMT" "apa102" "Freenove_WS2812_Lib_for_ESP32" "orientator")

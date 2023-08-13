@@ -4,6 +4,7 @@
     "idf.flashType": "UART",
     "files.associations": {
         "uni_bt_le.h": "c",
-        "btstack.h": "c"
+        "btstack.h": "c",
+        "chrono": "cpp"
     }
 }
