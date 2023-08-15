@@ -24,7 +24,7 @@
 #define RIGHT_DSHOT_GPIO GPIO_NUM_17
 
 #define CONTROLLER_RESPONSE_TIMEOUT 3000000U
-#define STICK_DEAD_ZONE 0.08
+#define STICK_DEAD_ZONE 0.1
 #define SPIN_POWER_THRESHOLD 0.02
 #define DRIVE_SENSITIVITY 0.1
 #define TURN_SENSITIVITY 0.015
@@ -44,16 +44,10 @@
 
 GamepadPtr myGamepad;
 DShotRMT esc_l, esc_r;
-bool reversed = false;
-bool button_b = false;
+boolean buttons[3] = {false, false, false}; // B, <-, ->
 bool controller_idle = false;
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
-
-Freenove_ESP32_WS2812 LED1 = Freenove_ESP32_WS2812(LED_COUNT, LED_PIN, RMT_CHANNEL, TYPE_GRB);
-//apa102_driver_t LED;
-
-
 
 // This callback gets called any time a new gamepad is connected.
 void onConnectedGamepad(GamepadPtr gp) {
@@ -106,17 +100,6 @@ void setMotorPower(float left_power, float right_power) {
     }
 }
 
-static void controllerDisconnectedCallback(void *args) {
-
-    reversed = !reversed;
-    if (reversed) {
-        digitalWrite(10, HIGH);
-    } else {
-        digitalWrite(10, LOW);
-    }
-
-}
-
 uint32_t spin_data[128];
 int readCounter = 0;
 int cooldown = 0;
@@ -124,13 +107,8 @@ orientator sensor;
 // Arduino setup function. Runs in CPU 1
 void setup() {
 
-    //LED1.begin();
-    //LED1.setBrightness(3);
-    //LED1.set_pixel(0, 0, 5, 10);
-    //LED1.show();
     LEDSTRIP.init(1);
     pinMode(10, OUTPUT);
-    pinMode(9, INPUT);
     pinMode(18, OUTPUT);
 
     Console.printf("Firmware: %s\n", BP32.firmwareVersion());
@@ -146,13 +124,12 @@ void setup() {
     esc_r.install(RIGHT_DSHOT_GPIO, RIGHT_DSHOT_RMT_CHANNEL);
     //esc_l.init(true);
     //esc_r.init(true);
-    create_timer.callback = &controllerDisconnectedCallback;
-    create_timer.dispatch_method = ESP_TIMER_TASK;
-    esp_timer_create(&create_timer, &test_timer);
-    esp_timer_start_periodic(test_timer, 3000000);
+    //create_timer.callback = &controllerDisconnectedCallback;
+    //create_timer.dispatch_method = ESP_TIMER_TASK;
+    //esp_timer_create(&create_timer, &test_timer);
+    //esp_timer_start_periodic(test_timer, 3000000);
 
     sensor.setup(9);
-    sensor.setOffset(3);
 
     //LED1.set_pixel(0, 5, 0, 10);
     //LED1.show();
@@ -170,13 +147,18 @@ void loop() {
     // The gamepads pointer (the ones received in the callbacks) gets updated
     // automatically.
     BP32.update();
+
+    if (cooldown <= 0) {
+        sensor.updatePeriod();
+        sensor.updateOrientation();
+        cooldown = 32;
+    } else {
+        cooldown--;
+    }
     //Console.println(sensor.getPeriod());
-    digitalWrite(18, digitalRead(9));
     hue += 0.1;
     if (hue >= 360) hue = 0;
-    
     LEDSTRIP.leds[0] = HSV(hue, 1, 1, 255);
-    
     LEDSTRIP.update();
 
     if (myGamepad && myGamepad->isConnected()) {
@@ -188,21 +170,24 @@ void loop() {
             float left_power = 0;
             float right_power = 0;
             float y = -((float)myGamepad->axisY())/512;
-            float x = ((float)myGamepad->axisRX())/512;
-            float spin_power = (float)(myGamepad->throttle() - myGamepad->brake())/1024;
+            float x = ((float)myGamepad->axisX())/512;
+            float r = ((float)myGamepad->axisRX())/512;
+            float spin_power = -((float)(myGamepad->throttle() - myGamepad->brake()))/1024;
             if (abs(spin_power) < SPIN_POWER_THRESHOLD) { // run in tank drive if not spinning
                 if (abs(y) > STICK_DEAD_ZONE) {
                     left_power += y * DRIVE_SENSITIVITY;
                     right_power -= y * DRIVE_SENSITIVITY;
                 }
-                if (abs(x) > STICK_DEAD_ZONE) {
-                    left_power += x * TURN_SENSITIVITY;
-                    right_power += x * TURN_SENSITIVITY;
+                if (abs(r) > STICK_DEAD_ZONE) {
+                    left_power += r * TURN_SENSITIVITY;
+                    right_power += r * TURN_SENSITIVITY;
                 }
             } else { // melty mode
-                left_power = spin_power;
-                right_power = spin_power;
-                // TODO: add melty mode
+                float hypot = hypotf(x,y);
+                if (hypot < STICK_DEAD_ZONE) hypot = 0;
+                const float theta = atan2f(y,x);
+                left_power = spin_power + 0.25*hypot*sin(copysignf(1.0, spin_power)*sensor.getOrientation() + theta);
+                right_power = spin_power - 0.25*hypot*sin(copysignf(1.0, spin_power)*sensor.getOrientation() + theta);
             }
 
             if (abs(left_power) > 1 || abs(right_power) > 1) {
@@ -213,8 +198,8 @@ void loop() {
             setMotorPower(left_power, right_power);
 
             if (myGamepad->b()) {
-                if (!button_b) {
-                    button_b = true;
+                if (!buttons[0]) {
+                    buttons[0] = true;
                     //sensor.fillArray(spin_data);
                     for (int i = 0; i < 128; i++) {
                         Console.printf("%d, ", spin_data[i]);
@@ -222,20 +207,41 @@ void loop() {
                     Console.print("\n");
                 }
             } else {
-                button_b = false;
+                buttons[0] = false;
             }
 
             if (myGamepad->a()) {
-                if (cooldown <= 0) {
-                    if (readCounter < 128) {
-                        sensor.updatePeriod();
-                        spin_data[readCounter] = sensor.getPeriod();
-                        readCounter++;
-                    }
-                    cooldown = 32;
-                } else {
-                    cooldown--;
+                if (readCounter < 128) {
+                    sensor.updatePeriod();
+                    spin_data[readCounter] = sensor.getPeriod();
+                    readCounter++;
                 }
+            }
+
+            if (myGamepad->x()) {
+                digitalWrite(18, digitalRead(9));
+            } else {
+                digitalWrite(18, sensor.getOrientation() < 0.2);
+            }
+
+            if (myGamepad->left()) {
+                if (!buttons[1]) {
+                    buttons[1] = true;
+                    sensor.setOffset(sensor.getOffset() + 0.05);
+                    Console.printf("offset: %f\n", sensor.getOffset());
+                }
+            } else {
+                buttons[1] = false;
+            }
+
+            if (myGamepad->right()) {
+                if (!buttons[2]) {
+                    buttons[2] = true;
+                    sensor.setOffset(sensor.getOffset() - 0.05);
+                    Console.printf("offset: %f\n", sensor.getOffset());
+                }
+            } else {
+                buttons[2] = false;
             }
 
             if (myGamepad->miscHome()) {

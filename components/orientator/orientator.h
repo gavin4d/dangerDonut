@@ -11,21 +11,22 @@ class orientator {
         orientator();
         ~orientator();
 
-        void setup(uint8_t);
+        void setup(uint8_t pin);
         boolean updatePeriod();
+        void updateOrientation();
         double getOrientation();
-        void setOffset(double);
+        void setOffset(double offset);
         double getOffset();
         uint32_t getPeriod();
-        void fillArray(uint32_t[]);
 
     private:
         static std::bitset<500> IRData; // 500 bit array for incomming IR data
         static uint8_t pin;
-        double offset;
-        uint32_t rotationPeriod = 0; // microseconds
-        esp_timer_handle_t update_timer;
+        double offset = 0;
+        uint16_t rotationPeriod = 0; // milliseconds
+        uint64_t peakTimeStamp;
 
+        esp_timer_handle_t update_timer;
         static void checkIRCallback(void *args);
 
 };

@@ -121,6 +121,10 @@ class Controller {
     bool b() const { return buttons() & BUTTON_B; }
     bool x() const { return buttons() & BUTTON_X; }
     bool y() const { return buttons() & BUTTON_Y; }
+    bool up() const { return dpad() & DPAD_UP; }
+    bool down() const { return dpad() & DPAD_DOWN; }
+    bool right() const { return dpad() & DPAD_RIGHT; }
+    bool left() const { return dpad() & DPAD_LEFT; }
     bool l1() const { return buttons() & BUTTON_SHOULDER_L; }
     bool l2() const { return buttons() & BUTTON_TRIGGER_L; }
     bool r1() const { return buttons() & BUTTON_SHOULDER_R; }

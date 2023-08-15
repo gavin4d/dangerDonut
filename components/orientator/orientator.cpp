@@ -2,9 +2,9 @@
 #include <iostream>
 
 #define RESOLUTION 1000 // microseconds
-#define SAMPLE_WINDOW 250000/RESOLUTION // microseconds
-#define MAX_DELAY SAMPLE_WINDOW // microseconds
-#define CORRELATION_TOLERANCE 0.75*SAMPLE_WINDOW
+#define SAMPLE_WINDOW 250000/RESOLUTION
+#define MAX_DELAY SAMPLE_WINDOW
+#define CORRELATION_TOLERANCE 0.78*SAMPLE_WINDOW
 
 uint8_t orientator::pin;
 std::bitset<500> orientator::IRData;
@@ -16,7 +16,7 @@ orientator::~orientator() {
 }
 
 void orientator::setOffset(double offset) {
-    orientator::offset = offset;
+    orientator::offset = offset-floor(offset);
 }
 
 double orientator::getOffset() {
@@ -24,7 +24,11 @@ double orientator::getOffset() {
 }
 
 uint32_t orientator::getPeriod() {
-    return orientator::rotationPeriod;
+    return rotationPeriod;
+}
+
+double orientator::getOrientation() {
+    return (double)((esp_timer_get_time() - peakTimeStamp) % (rotationPeriod*RESOLUTION))*2*PI/rotationPeriod/RESOLUTION;
 }
 
 void orientator::checkIRCallback(void *args) {
@@ -44,11 +48,11 @@ void orientator::setup(uint8_t pin) {
 
 boolean orientator::updatePeriod() { // auto correlation
     //const uint32_t startTime = esp_timer_get_time();
-    using namespace std;
+    //using namespace std;
     boolean hasIncreased = false;
     boolean foundPeak = false;
-    uint32_t lastsum = 0xffffffff; // init to max so first loop doesn't detect a increase
-    uint32_t delay;
+    uint16_t lastsum = 0xffff; // init to max so first loop doesn't detect a increase
+    uint16_t delay;
     for (delay = 0; delay < MAX_DELAY; delay ++) {
 
         uint32_t sum = SAMPLE_WINDOW - ((IRData ^ (IRData >> delay)) << SAMPLE_WINDOW).count();
@@ -70,6 +74,34 @@ boolean orientator::updatePeriod() { // auto correlation
     return foundPeak;
 }
 
-double orientator::getOrientation() { // convolution
-    return 0;
+void orientator::updateOrientation() { // convolution
+    const uint16_t convolutionSize = rotationPeriod/2;
+    uint16_t convolutionOut[rotationPeriod];
+    uint16_t peak = 0;
+    uint16_t maxOutput = 0;
+
+    for (uint16_t i = 0; i < rotationPeriod; i++) { // first convolution using bitset
+        uint16_t sum = 0;
+        for (uint16_t j = 0; j < convolutionSize; j++) {
+            sum += IRData[(j+i) % rotationPeriod];
+        }
+        convolutionOut[i] = sum;
+        //convolutionOut[i] = ((IRData << i | IRData >> (rotationPeriod-i)) << convolutionSize).count();
+    }
+
+    for (uint16_t i = 0; i < rotationPeriod; i++) { // second convolution to smooth the output
+        uint16_t sum = 0;
+        for (uint16_t j = 0; j < convolutionSize; j++) {
+            sum += convolutionOut[(j+i) % rotationPeriod];
+        }
+
+        if (sum > maxOutput) {
+            maxOutput = sum;
+            peak = i;
+        }
+
+    }
+
+    peakTimeStamp = esp_timer_get_time() - peak*RESOLUTION - offset*(double)rotationPeriod*RESOLUTION;
+
 }
