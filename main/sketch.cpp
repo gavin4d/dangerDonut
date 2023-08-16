@@ -131,12 +131,8 @@ void setup() {
 
     sensor.setup(9);
 
-    //LED1.set_pixel(0, 5, 0, 10);
-    //LED1.show();
-
-    for (int i = 0; i < 64; i++) {
-        spin_data[i] = (uint64_t)0;
-    }
+    LEDSTRIP.txbuffer[1] = RGBL(0, 0, 0, 0);
+    LEDSTRIP.update();
 }
 
 // Arduino loop function. Runs in CPU 1
@@ -158,7 +154,7 @@ void loop() {
     //Console.println(sensor.getPeriod());
     hue += 0.1;
     if (hue >= 360) hue = 0;
-    LEDSTRIP.leds[0] = HSV(hue, 1, 1, 255);
+    LEDSTRIP.leds[0] = HSV(hue, 1, 0.05, 8);
     LEDSTRIP.update();
 
     if (myGamepad && myGamepad->isConnected()) {

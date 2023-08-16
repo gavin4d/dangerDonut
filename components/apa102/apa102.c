@@ -16,6 +16,7 @@ static int apa102_init(int n)
 	APA102.txbuffer = heap_caps_malloc(size, MALLOC_CAP_DMA | MALLOC_CAP_32BIT);
 	memset(APA102.txbuffer, 0, size);
 	
+	APA102.txbuffer[0] = 0xFFFFFFFF;
 	for (int i=0; i<APA102.count; i++) APA102.txbuffer[1+i] = 0xE0000000;
 	spi_bus_initialize(APA102.spi_host, &APA102.bus_config, APA102.dma_channel);
 	spi_bus_add_device(APA102.spi_host, &APA102.dev_config, &APA102.device);
