@@ -1,4 +1,6 @@
 build/
+PCB/DangerDonut-backups/
+PCB/~DangerDonut.kicad_sch.lck
 sdkconfig.old
 sdkconfig
 *.o
