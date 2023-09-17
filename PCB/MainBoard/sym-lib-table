@@ -4,4 +4,5 @@
   (lib (name "ESP32-S3-WROOM-1-N8R2")(type "KiCad")(uri "C:/Users/crazz/Desktop/ESP32-S3-WROOM-1-N8R2/ESP32-S3-WROOM-1-N8R2.kicad_sym")(options "")(descr ""))
   (lib (name "HD107S")(type "KiCad")(uri "C:/Users/crazz/Documents/KiCad/7.0/symbols/HD107S.kicad_sym")(options "")(descr ""))
   (lib (name "TYPEC-300D-BCP16H88")(type "KiCad")(uri "C:/Users/crazz/Documents/KiCad/7.0/symbols/TYPEC-300D-BCP16H88.kicad_sym")(options "")(descr ""))
+  (lib (name "DangerDonutParts")(type "KiCad")(uri "${KIPRJMOD}/partFiles/DangerDonutParts.kicad_sym")(options "")(descr ""))
 )

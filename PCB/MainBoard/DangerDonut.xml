@@ -1,0 +1,1507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>C:\Users\crazz\Documents\Programming\dangerDonut\PCB\DangerDonut.kicad_sch</source>
+    <date>8/22/2023 3:12:40 PM</date>
+    <tool>Eeschema 7.0.7</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Danger Donut</title>
+        <company/>
+        <rev>V1</rev>
+        <date>2023-08-15</date>
+        <source>DangerDonut.kicad_sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="BT1">
+      <value>Battery_Cell</value>
+      <footprint>DangerDonutParts:Battery_Solder_Point</footprint>
+      <libsource lib="Device" part="Battery_Cell" description="Single-cell battery"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Single-cell battery"/>
+      <property name="ki_keywords" value="battery cell"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cad350dc-a3f0-4b8d-b17e-819e8662f886</tstamps>
+    </comp>
+    <comp ref="BT2">
+      <value>Battery_Cell</value>
+      <footprint>DangerDonutParts:Battery_Solder_Point</footprint>
+      <libsource lib="Device" part="Battery_Cell" description="Single-cell battery"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Single-cell battery"/>
+      <property name="ki_keywords" value="battery cell"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>232e8d54-cc05-40ea-bc26-db8ba35442db</tstamps>
+    </comp>
+    <comp ref="C1">
+      <value>470 pF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dc96f10d-a7f2-44f9-938d-992150ce0089</tstamps>
+    </comp>
+    <comp ref="C2">
+      <value>2.2 uF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>24411ac0-fff2-4afc-aeaf-b59bd1d2dabe</tstamps>
+    </comp>
+    <comp ref="C3">
+      <value>470 pF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>029dd680-a527-44e7-902c-03c80292168f</tstamps>
+    </comp>
+    <comp ref="C4">
+      <value>2.2 uF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4b979042-8daf-4f00-b775-51cb3bc7c493</tstamps>
+    </comp>
+    <comp ref="C5">
+      <value>1 uF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>870ad27d-c1ca-4c71-98c6-bafd46f13ab6</tstamps>
+    </comp>
+    <comp ref="C6">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3f56fae1-e2a2-4b00-94ab-5e84f246c2f0</tstamps>
+    </comp>
+    <comp ref="C7">
+      <value>22 uF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>50930233-7151-43a7-a397-ce8842140f0e</tstamps>
+    </comp>
+    <comp ref="C8">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c4d61e72-2581-43e0-95f5-4db46d85a401</tstamps>
+    </comp>
+    <comp ref="C9">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>400ec74e-6b02-4919-bbd5-f4a3a58d8398</tstamps>
+    </comp>
+    <comp ref="C10">
+      <value>10 uF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6f9c0a24-8b74-40a9-b090-56d998d3613c</tstamps>
+    </comp>
+    <comp ref="C11">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f762b366-9ae9-42bb-a200-cd162f9a6a35</tstamps>
+    </comp>
+    <comp ref="C12">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cdaa0449-faa6-45b9-aa61-862702af8a76</tstamps>
+    </comp>
+    <comp ref="C13">
+      <value>22 uF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>31c8d246-4f18-4f04-ad34-41335b9cab98</tstamps>
+    </comp>
+    <comp ref="C14">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2998e686-0b79-4796-aacd-246983da995d</tstamps>
+    </comp>
+    <comp ref="C15">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1d328f17-97ff-4477-9f84-5e193793bcd1</tstamps>
+    </comp>
+    <comp ref="C16">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6686398d-5ea5-46e0-b1c3-24ec79d46386</tstamps>
+    </comp>
+    <comp ref="C17">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f7fff121-860f-4bbb-8f5a-1469888103d5</tstamps>
+    </comp>
+    <comp ref="C18">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9ac5855d-85d7-459e-bf78-b94ccd65f8fb</tstamps>
+    </comp>
+    <comp ref="C19">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d3651c29-f40c-4e7c-acc2-d83190d08685</tstamps>
+    </comp>
+    <comp ref="C20">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0601a491-6d3f-451d-b397-2cf4fdf7e543</tstamps>
+    </comp>
+    <comp ref="C21">
+      <value>100 nF</value>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6cbf7d5a-762b-45de-bc32-082d79626ff7</tstamps>
+    </comp>
+    <comp ref="D1">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fe2ee257-9f70-4412-aa63-016dd9e58961</tstamps>
+    </comp>
+    <comp ref="D2">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ff302711-b4f2-4fe5-bd8e-0f8e7c891cda</tstamps>
+    </comp>
+    <comp ref="D3">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>843d1b0b-5c39-4f24-9692-9724b8a7e582</tstamps>
+    </comp>
+    <comp ref="D4">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>84d7ad9c-f334-48d8-a39a-cb3a38a2e61c</tstamps>
+    </comp>
+    <comp ref="D5">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a9c94ebb-9e33-4716-8060-322506abbc7e</tstamps>
+    </comp>
+    <comp ref="D6">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>08652a12-43ab-445d-8dd4-852b4c3c7835</tstamps>
+    </comp>
+    <comp ref="D7">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5fc77715-9fe3-4e3c-b65f-28c461f32846</tstamps>
+    </comp>
+    <comp ref="D8">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dc04fa21-bd01-4700-9786-6ca0b7d5d114</tstamps>
+    </comp>
+    <comp ref="D9">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7631fbb4-1de2-44d7-93af-75dbcc69a18a</tstamps>
+    </comp>
+    <comp ref="D10">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5a44cb97-e6d8-467f-b097-9b964e8ea42a</tstamps>
+    </comp>
+    <comp ref="D11">
+      <value>HD107S</value>
+      <footprint>DangerDonutParts:HD107S</footprint>
+      <libsource lib="DangerDonutParts" part="HD107S" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8a3dd860-0f2f-4070-a60f-3f13a4a617be</tstamps>
+    </comp>
+    <comp ref="D12">
+      <value>1N5819</value>
+      <fields>
+        <field name="Sim.Device">D</field>
+        <field name="Sim.Pins">1=K 2=A</field>
+      </fields>
+      <libsource lib="Device" part="D" description="Diode"/>
+      <property name="Sim.Device" value="D"/>
+      <property name="Sim.Pins" value="1=K 2=A"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Diode"/>
+      <property name="ki_keywords" value="diode"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9b3eb316-b4b2-4aa4-a86b-d3beaec36929</tstamps>
+    </comp>
+    <comp ref="D13">
+      <value>Z3.3V</value>
+      <libsource lib="Device" part="D_Zener" description="Zener diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Zener diode"/>
+      <property name="ki_keywords" value="diode"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>321476ad-aa4f-41ce-b36c-f66addd9c273</tstamps>
+    </comp>
+    <comp ref="H1">
+      <value>~</value>
+      <footprint>DangerDonutParts:SMTSO2515</footprint>
+      <libsource lib="DangerDonutParts" part="SMTSO2515" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a0608ed7-74eb-4088-8748-ab73e40bc4a9</tstamps>
+    </comp>
+    <comp ref="H2">
+      <value>~</value>
+      <footprint>DangerDonutParts:SMTSO2515</footprint>
+      <libsource lib="DangerDonutParts" part="SMTSO2515" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dc0e9f3a-e8c0-4f7b-9f32-92121aa84f15</tstamps>
+    </comp>
+    <comp ref="H3">
+      <value>~</value>
+      <footprint>DangerDonutParts:SMTSO2515</footprint>
+      <libsource lib="DangerDonutParts" part="SMTSO2515" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5c9842ff-8d71-4859-affc-2f00f0223727</tstamps>
+    </comp>
+    <comp ref="J1">
+      <value>~</value>
+      <footprint>DangerDonutParts:TYPE_C_16PLC_H100</footprint>
+      <libsource lib="DangerDonutParts" part="TYPE_C_16PLC_H100" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>565d757a-1475-4366-bca3-df2a3c3c909b</tstamps>
+    </comp>
+    <comp ref="J2">
+      <value>~</value>
+      <footprint>DangerDonutParts:ESC_XSD7A_Data</footprint>
+      <libsource lib="DangerDonutParts" part="ESC_XSD7A_Data" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>df2c4d59-b0db-4e1f-83c3-b6bf1f7f2b91</tstamps>
+    </comp>
+    <comp ref="J3">
+      <value>~</value>
+      <footprint>DangerDonutParts:ESC_XSD7A_Data</footprint>
+      <libsource lib="" part="ESC_XSD7A_Data_1" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>23b00d62-ff04-4f18-9658-c309fbae34f3</tstamps>
+    </comp>
+    <comp ref="J4">
+      <value>~</value>
+      <footprint>DangerDonutParts:ESC_XSD7A_Power</footprint>
+      <libsource lib="DangerDonutParts" part="ESC_XSD7A_Power" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b381ccd0-d77c-4b58-8a0a-51ae039b4ae1</tstamps>
+    </comp>
+    <comp ref="J5">
+      <value>~</value>
+      <footprint>DangerDonutParts:ESC_XSD7A_Power</footprint>
+      <libsource lib="DangerDonutParts" part="ESC_XSD7A_Power" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e2e39b43-0d0f-47ce-9f99-d3d8543ad9cf</tstamps>
+    </comp>
+    <comp ref="R1">
+      <value>10k</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>aa0ce161-8e5b-43d3-86d8-d004dff90583</tstamps>
+    </comp>
+    <comp ref="R2">
+      <value>10k</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9e5e114b-3889-44f1-9006-92b5523ac701</tstamps>
+    </comp>
+    <comp ref="R3">
+      <value>10K</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>643126d5-3722-4bd4-b3f9-85052137e395</tstamps>
+    </comp>
+    <comp ref="R4">
+      <value>0</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a478b7d8-0502-46b0-9212-8a3fd890648a</tstamps>
+    </comp>
+    <comp ref="R5">
+      <value>5.1K</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>51ea2240-4b28-4959-a5ce-e6b3b741d42a</tstamps>
+    </comp>
+    <comp ref="R6">
+      <value>5.1K</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cb3ca035-9a7b-4b2b-bb07-73029e671571</tstamps>
+    </comp>
+    <comp ref="R7">
+      <value>100</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1434ba3a-4fbb-4283-9a15-4ac2f004528a</tstamps>
+    </comp>
+    <comp ref="R8">
+      <value>68</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d240ed03-dd5d-43a8-9b5c-fb9803708232</tstamps>
+    </comp>
+    <comp ref="R9">
+      <value>100</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8ab1e8cd-f41b-42d2-9f05-37557934a2f4</tstamps>
+    </comp>
+    <comp ref="R10">
+      <value>100</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7df735a8-9209-4e40-82ab-8a436a4319e7</tstamps>
+    </comp>
+    <comp ref="R11">
+      <value>10k</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>34ed3fc1-31e9-4a1d-8205-4a8b92587080</tstamps>
+    </comp>
+    <comp ref="R12">
+      <value>5.1K</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d30f0271-6864-4ab0-a6db-88d125246414</tstamps>
+    </comp>
+    <comp ref="R13">
+      <value>1.5K</value>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7e2fa56f-f566-4309-bebf-416fb5c1e578</tstamps>
+    </comp>
+    <comp ref="SW1">
+      <value>~</value>
+      <footprint>DangerDonutParts:SMTSO2515_SW</footprint>
+      <libsource lib="DangerDonutParts" part="SMTSO2515_SW" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f8ab89b6-3ca6-48ca-9f46-f20fa2995428</tstamps>
+    </comp>
+    <comp ref="SW2">
+      <value>SW_Push</value>
+      <libsource lib="Switch" part="SW_Push" description="Push button switch, generic, two pins"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Push button switch, generic, two pins"/>
+      <property name="ki_keywords" value="switch normally-open pushbutton push-button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>83755398-c56f-4413-907d-e017777761aa</tstamps>
+    </comp>
+    <comp ref="SW3">
+      <value>SW_Push</value>
+      <libsource lib="Switch" part="SW_Push" description="Push button switch, generic, two pins"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="Push button switch, generic, two pins"/>
+      <property name="ki_keywords" value="switch normally-open pushbutton push-button"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6168eb21-8d61-42f5-ab75-68916b58ce75</tstamps>
+    </comp>
+    <comp ref="U1">
+      <value>ADXL375BCCZ-RL7</value>
+      <footprint>DangerDonutParts:LGA_CC-14-1_ADI-M</footprint>
+      <datasheet>ADXL375BCCZ-RL7</datasheet>
+      <libsource lib="DangerDonutParts" part="ADXL375BCCZ-RL7" description=""/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_keywords" value="ADXL375BCCZ-RL7"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>51c764d4-fc03-45ba-95e4-98cbb85a8451</tstamps>
+    </comp>
+    <comp ref="U2">
+      <value>MIC5219-5.0YM5</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>http://ww1.microchip.com/downloads/en/DeviceDoc/MIC5219-500mA-Peak-Output-LDO-Regulator-DS20006021A.pdf</datasheet>
+      <libsource lib="Regulator_Linear" part="MIC5219-5.0YM5" description="500mA low dropout linear regulator, fixed 5.0V output, SOT-23-5"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="500mA low dropout linear regulator, fixed 5.0V output, SOT-23-5"/>
+      <property name="ki_keywords" value="500mA ultra-low-noise LDO linear voltage regulator fixed positive"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>12063229-4e9a-4899-8c85-4b5a8f6cd2f2</tstamps>
+    </comp>
+    <comp ref="U3">
+      <value>MIC5219-3.3YM5</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23-5</footprint>
+      <datasheet>http://ww1.microchip.com/downloads/en/DeviceDoc/MIC5219-500mA-Peak-Output-LDO-Regulator-DS20006021A.pdf</datasheet>
+      <libsource lib="Regulator_Linear" part="MIC5219-3.3YM5" description="500mA low dropout linear regulator, fixed 3.3V output, SOT-23-5"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="500mA low dropout linear regulator, fixed 3.3V output, SOT-23-5"/>
+      <property name="ki_keywords" value="500mA ultra-low-noise LDO linear voltage regulator fixed positive"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9da70ab9-2332-4e8a-8f29-fbef0b7e0635</tstamps>
+    </comp>
+    <comp ref="U4">
+      <value>TSSP58038</value>
+      <footprint>OptoDevice:Vishay_MINICAST-3Pin</footprint>
+      <datasheet>http://www.vishay.com/docs/82476/tssp58p38.pdf</datasheet>
+      <libsource lib="Sensor_Proximity" part="TSSP58038" description="IR Detector for Mid Range Proximity Sensor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <property name="ki_description" value="IR Detector for Mid Range Proximity Sensor"/>
+      <property name="ki_keywords" value="opto IR receiver proximity sensor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cd64dab6-447e-462a-a0c3-59ffda224a0b</tstamps>
+    </comp>
+    <comp ref="U5">
+      <value>ESP32-S3-WROOM-1-N16</value>
+      <footprint>DangerDonutParts:XCVR_ESP32-S3-WROOM-1-N8R2</footprint>
+      <fields>
+        <field name="Check_prices">https://www.snapeda.com/parts/ESP32-S3-WROOM-1-N8R2/Espressif+Systems/view-part/?ref=eda</field>
+        <field name="Description">
+WiFi 802.11a/b/g/n, Bluetooth v5.0 Transceiver Module 2.4GHz Antenna Not Included -
+</field>
+        <field name="DigiKey_Part_Number">1965-ESP32-S3-WROOM-1-N8R2-ND</field>
+        <field name="MANUFACTURER">Espressif</field>
+        <field name="MAXIMUM_PACKAGE_HEIGHT">3.25mm</field>
+        <field name="MF">Espressif Systems</field>
+        <field name="MP">ESP32-S3-WROOM-1-N8R2</field>
+        <field name="PARTREV">v1.0</field>
+        <field name="Package">- Espressif Systems</field>
+        <field name="Purchase-URL">https://pricing.snapeda.com/search?q=ESP32-S3-WROOM-1-N8R2&amp;ref=eda</field>
+        <field name="STANDARD">Manufacturer Recommendations</field>
+        <field name="SnapEDA_Link">https://www.snapeda.com/parts/ESP32-S3-WROOM-1-N8R2/Espressif+Systems/view-part/?ref=snap</field>
+      </fields>
+      <libsource lib="DangerDonutParts" part="ESP32-S3-WROOM-1-N8R2" description=""/>
+      <property name="DigiKey_Part_Number" value="1965-ESP32-S3-WROOM-1-N8R2-ND"/>
+      <property name="MF" value="Espressif Systems"/>
+      <property name="MAXIMUM_PACKAGE_HEIGHT" value="3.25mm"/>
+      <property name="Package" value="- Espressif Systems"/>
+      <property name="Check_prices" value="https://www.snapeda.com/parts/ESP32-S3-WROOM-1-N8R2/Espressif+Systems/view-part/?ref=eda"/>
+      <property name="STANDARD" value="Manufacturer Recommendations"/>
+      <property name="PARTREV" value="v1.0"/>
+      <property name="SnapEDA_Link" value="https://www.snapeda.com/parts/ESP32-S3-WROOM-1-N8R2/Espressif+Systems/view-part/?ref=snap"/>
+      <property name="MP" value="ESP32-S3-WROOM-1-N8R2"/>
+      <property name="Purchase-URL" value="https://pricing.snapeda.com/search?q=ESP32-S3-WROOM-1-N8R2&amp;ref=eda"/>
+      <property name="Description" value="&#xA;WiFi 802.11a/b/g/n, Bluetooth v5.0 Transceiver Module 2.4GHz Antenna Not Included -&#xA;"/>
+      <property name="MANUFACTURER" value="Espressif"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="DangerDonut.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d33dfcfc-f467-41a6-9b0d-5903382c3b10</tstamps>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="" part="ESC_XSD7A_Data_1">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Footprint">DangerDonutParts:ESC_XSD7A_Data</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="Data" type="bidirectional"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="ADXL375BCCZ-RL7">
+      <docs>ADXL375BCCZ-RL7</docs>
+      <footprints>
+        <fp>LGA_CC-14-1_ADI</fp>
+        <fp>LGA_CC-14-1_ADI-M</fp>
+        <fp>LGA_CC-14-1_ADI-L</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ADXL375BCCZ-RL7</field>
+        <field name="Footprint">DangerDonutParts:LGA_CC-14-1_ADI-M</field>
+        <field name="Datasheet">ADXL375BCCZ-RL7</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VDDI/O" type="power_in"/>
+        <pin num="2" name="GND" type="power_out"/>
+        <pin num="3" name="RESERVED" type="unspecified"/>
+        <pin num="4" name="GND" type="power_out"/>
+        <pin num="5" name="GND" type="power_out"/>
+        <pin num="6" name="VS" type="unspecified"/>
+        <pin num="7" name="*CS" type="unspecified"/>
+        <pin num="8" name="INT1" type="bidirectional"/>
+        <pin num="9" name="INT2" type="bidirectional"/>
+        <pin num="10" name="NC" type="no_connect"/>
+        <pin num="11" name="RESERVED" type="unspecified"/>
+        <pin num="12" name="SDO/ALTADDRESS" type="unspecified"/>
+        <pin num="13" name="SDA/SDI/SDIO" type="unspecified"/>
+        <pin num="14" name="SCL/SCLK" type="unspecified"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="ESC_XSD7A_Data">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Footprint">DangerDonutParts:ESC_XSD7A_Data</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="Data" type="bidirectional"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="ESC_XSD7A_Power">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Footprint">DangerDonutParts:ESC_XSD7A_Power</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="Vcc" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="ESP32-S3-WROOM-1-N8R2">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ESP32-S3-WROOM-1-N8R2</field>
+        <field name="Footprint">DangerDonutParts:XCVR_ESP32-S3-WROOM-1-N8R2</field>
+        <field name="DigiKey_Part_Number">1965-ESP32-S3-WROOM-1-N8R2-ND</field>
+        <field name="MF">Espressif Systems</field>
+        <field name="MAXIMUM_PACKAGE_HEIGHT">3.25mm</field>
+        <field name="Package">- Espressif Systems</field>
+        <field name="Check_prices">https://www.snapeda.com/parts/ESP32-S3-WROOM-1-N8R2/Espressif+Systems/view-part/?ref=eda</field>
+        <field name="STANDARD">Manufacturer Recommendations</field>
+        <field name="PARTREV">v1.0</field>
+        <field name="SnapEDA_Link">https://www.snapeda.com/parts/ESP32-S3-WROOM-1-N8R2/Espressif+Systems/view-part/?ref=snap</field>
+        <field name="MP">ESP32-S3-WROOM-1-N8R2</field>
+        <field name="Purchase-URL">https://pricing.snapeda.com/search?q=ESP32-S3-WROOM-1-N8R2&amp;ref=eda</field>
+        <field name="Description">
+WiFi 802.11a/b/g/n, Bluetooth v5.0 Transceiver Module 2.4GHz Antenna Not Included -
+</field>
+        <field name="MANUFACTURER">Espressif</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="3V3" type="power_in"/>
+        <pin num="3" name="EN" type="input"/>
+        <pin num="4" name="IO4" type="bidirectional"/>
+        <pin num="5" name="IO5" type="bidirectional"/>
+        <pin num="6" name="IO6" type="bidirectional"/>
+        <pin num="7" name="IO7" type="bidirectional"/>
+        <pin num="8" name="IO15" type="bidirectional"/>
+        <pin num="9" name="IO16" type="bidirectional"/>
+        <pin num="10" name="IO17" type="bidirectional"/>
+        <pin num="11" name="IO18" type="bidirectional"/>
+        <pin num="12" name="IO8" type="bidirectional"/>
+        <pin num="13" name="IO19" type="bidirectional"/>
+        <pin num="14" name="IO20" type="bidirectional"/>
+        <pin num="15" name="IO3" type="bidirectional"/>
+        <pin num="16" name="IO46" type="bidirectional"/>
+        <pin num="17" name="IO9" type="bidirectional"/>
+        <pin num="18" name="IO10" type="bidirectional"/>
+        <pin num="19" name="IO11" type="bidirectional"/>
+        <pin num="20" name="IO12" type="bidirectional"/>
+        <pin num="21" name="IO13" type="bidirectional"/>
+        <pin num="22" name="IO14" type="bidirectional"/>
+        <pin num="23" name="IO21" type="bidirectional"/>
+        <pin num="24" name="IO47" type="bidirectional"/>
+        <pin num="25" name="IO48" type="bidirectional"/>
+        <pin num="26" name="IO45" type="bidirectional"/>
+        <pin num="27" name="IO0" type="bidirectional"/>
+        <pin num="28" name="IO35" type="bidirectional"/>
+        <pin num="29" name="IO36" type="bidirectional"/>
+        <pin num="30" name="IO37" type="bidirectional"/>
+        <pin num="31" name="IO38" type="bidirectional"/>
+        <pin num="32" name="IO39" type="bidirectional"/>
+        <pin num="33" name="IO40" type="bidirectional"/>
+        <pin num="34" name="IO41" type="bidirectional"/>
+        <pin num="35" name="IO42" type="bidirectional"/>
+        <pin num="36" name="RXD0" type="bidirectional"/>
+        <pin num="37" name="TXD0" type="bidirectional"/>
+        <pin num="38" name="IO2" type="bidirectional"/>
+        <pin num="39" name="IO1" type="bidirectional"/>
+        <pin num="40" name="GND" type="power_in"/>
+        <pin num="41_1" name="GND" type="power_in"/>
+        <pin num="41_2" name="GND" type="power_in"/>
+        <pin num="41_3" name="GND" type="power_in"/>
+        <pin num="41_4" name="GND" type="power_in"/>
+        <pin num="41_5" name="GND" type="power_in"/>
+        <pin num="41_6" name="GND" type="power_in"/>
+        <pin num="41_7" name="GND" type="power_in"/>
+        <pin num="41_8" name="GND" type="power_in"/>
+        <pin num="41_9" name="GND" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="HD107S">
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">HD107S</field>
+        <field name="Footprint">DangerDonutParts:HD107S</field>
+      </fields>
+      <pins>
+        <pin num="1" name="VDD" type="power_in"/>
+        <pin num="2" name="CO" type="output"/>
+        <pin num="3" name="DO" type="output"/>
+        <pin num="4" name="GND" type="power_in"/>
+        <pin num="5" name="CI" type="input"/>
+        <pin num="6" name="DI" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="SMTSO2515">
+      <fields>
+        <field name="Reference">H</field>
+        <field name="Footprint">DangerDonutParts:SMTSO2515</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="SMTSO2515_SW">
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Footprint">DangerDonutParts:SMTSO2515_SW</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="input"/>
+        <pin num="2" name="" type="output"/>
+      </pins>
+    </libpart>
+    <libpart lib="DangerDonutParts" part="TYPE_C_16PLC_H100">
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">TYPE_C_16PLC_H100</field>
+        <field name="Footprint">DangerDonutParts:TYPE_C_16PLC_H100</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Shell" type="power_in"/>
+        <pin num="A1" name="GND" type="power_in"/>
+        <pin num="A4" name="VBUS" type="power_in"/>
+        <pin num="A5" name="CC1" type="bidirectional"/>
+        <pin num="A6" name="D+" type="bidirectional"/>
+        <pin num="A7" name="D-" type="bidirectional"/>
+        <pin num="A8" name="SBU1" type="bidirectional"/>
+        <pin num="A9" name="VBUS" type="power_in"/>
+        <pin num="A12" name="GND" type="power_in"/>
+        <pin num="B1" name="GND" type="power_in"/>
+        <pin num="B4" name="VBUS" type="power_in"/>
+        <pin num="B5" name="CC2" type="bidirectional"/>
+        <pin num="B6" name="D+" type="bidirectional"/>
+        <pin num="B7" name="D-" type="bidirectional"/>
+        <pin num="B8" name="SBU2" type="bidirectional"/>
+        <pin num="B9" name="VBUS" type="power_in"/>
+        <pin num="B12" name="GND" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Battery_Cell">
+      <description>Single-cell battery</description>
+      <docs>~</docs>
+      <fields>
+        <field name="Reference">BT</field>
+        <field name="Value">Battery_Cell</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="+" type="passive"/>
+        <pin num="2" name="-" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C">
+      <description>Unpolarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="D">
+      <description>Diode</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D</field>
+        <field name="Datasheet">~</field>
+        <field name="Sim.Device">D</field>
+        <field name="Sim.Pins">1=K 2=A</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="D_Zener">
+      <description>Zener diode</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D_Zener</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Regulator_Linear" part="MIC5219-3.3YM5">
+      <description>500mA low dropout linear regulator, fixed 3.3V output, SOT-23-5</description>
+      <docs>http://ww1.microchip.com/downloads/en/DeviceDoc/MIC5219-500mA-Peak-Output-LDO-Regulator-DS20006021A.pdf</docs>
+      <footprints>
+        <fp>SOT?23*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MIC5219-3.3YM5</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">http://ww1.microchip.com/downloads/en/DeviceDoc/MIC5219-500mA-Peak-Output-LDO-Regulator-DS20006021A.pdf</field>
+      </fields>
+      <pins>
+        <pin num="1" name="IN" type="power_in"/>
+        <pin num="2" name="GND" type="power_in"/>
+        <pin num="3" name="EN" type="input"/>
+        <pin num="4" name="BP" type="input"/>
+        <pin num="5" name="OUT" type="power_out"/>
+      </pins>
+    </libpart>
+    <libpart lib="Regulator_Linear" part="MIC5219-5.0YM5">
+      <description>500mA low dropout linear regulator, fixed 5.0V output, SOT-23-5</description>
+      <docs>http://ww1.microchip.com/downloads/en/DeviceDoc/MIC5219-500mA-Peak-Output-LDO-Regulator-DS20006021A.pdf</docs>
+      <footprints>
+        <fp>SOT?23*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MIC5219-5.0YM5</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23-5</field>
+        <field name="Datasheet">http://ww1.microchip.com/downloads/en/DeviceDoc/MIC5219-500mA-Peak-Output-LDO-Regulator-DS20006021A.pdf</field>
+      </fields>
+      <pins>
+        <pin num="1" name="IN" type="power_in"/>
+        <pin num="2" name="GND" type="power_in"/>
+        <pin num="3" name="EN" type="input"/>
+        <pin num="4" name="BP" type="input"/>
+        <pin num="5" name="OUT" type="power_out"/>
+      </pins>
+    </libpart>
+    <libpart lib="Sensor_Proximity" part="TSSP58038">
+      <description>IR Detector for Mid Range Proximity Sensor</description>
+      <docs>http://www.vishay.com/docs/82476/tssp58p38.pdf</docs>
+      <footprints>
+        <fp>Vishay*MINICAST*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TSSP58038</field>
+        <field name="Footprint">OptoDevice:Vishay_MINICAST-3Pin</field>
+        <field name="Datasheet">http://www.vishay.com/docs/82476/tssp58p38.pdf</field>
+      </fields>
+      <pins>
+        <pin num="1" name="OUT" type="output"/>
+        <pin num="2" name="GND" type="power_in"/>
+        <pin num="3" name="Vs" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="Switch" part="SW_Push">
+      <description>Push button switch, generic, two pins</description>
+      <docs>~</docs>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">SW_Push</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="DangerDonutParts">
+      <uri>C:\Users\crazz\Documents\Programming\dangerDonut\PCB/partFiles/DangerDonutParts.kicad_sym</uri>
+    </library>
+    <library logical="Device">
+      <uri>C:\Program Files\KiCad\7.0\share\kicad\symbols\/Device.kicad_sym</uri>
+    </library>
+    <library logical="Regulator_Linear">
+      <uri>C:\Program Files\KiCad\7.0\share\kicad\symbols\/Regulator_Linear.kicad_sym</uri>
+    </library>
+    <library logical="Sensor_Proximity">
+      <uri>C:\Program Files\KiCad\7.0\share\kicad\symbols\/Sensor_Proximity.kicad_sym</uri>
+    </library>
+    <library logical="Switch">
+      <uri>C:\Program Files\KiCad\7.0\share\kicad\symbols\/Switch.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="+3.3V">
+      <node ref="C4" pin="1" pintype="passive"/>
+      <node ref="C7" pin="1" pintype="passive"/>
+      <node ref="C8" pin="1" pintype="passive"/>
+      <node ref="R11" pin="1" pintype="passive"/>
+      <node ref="U3" pin="5" pinfunction="OUT" pintype="power_out"/>
+      <node ref="U5" pin="2" pinfunction="3V3" pintype="power_in"/>
+    </net>
+    <net code="2" name="+3V3">
+      <node ref="C12" pin="2" pintype="passive"/>
+      <node ref="R3" pin="2" pintype="passive"/>
+      <node ref="R7" pin="2" pintype="passive"/>
+      <node ref="R8" pin="1" pintype="passive"/>
+      <node ref="U1" pin="1" pinfunction="VDDI/O" pintype="power_in"/>
+    </net>
+    <net code="3" name="+5V">
+      <node ref="C15" pin="2" pintype="passive"/>
+      <node ref="C16" pin="2" pintype="passive"/>
+      <node ref="C17" pin="2" pintype="passive"/>
+      <node ref="C18" pin="2" pintype="passive"/>
+      <node ref="C19" pin="2" pintype="passive"/>
+      <node ref="C2" pin="1" pintype="passive"/>
+      <node ref="C20" pin="2" pintype="passive"/>
+      <node ref="D1" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D10" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D11" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D2" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D3" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D4" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D5" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D6" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D7" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D8" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="D9" pin="1" pinfunction="VDD" pintype="power_in"/>
+      <node ref="U2" pin="5" pinfunction="OUT" pintype="power_out"/>
+    </net>
+    <net code="4" name="+BATT">
+      <node ref="BT1" pin="1" pinfunction="+" pintype="passive"/>
+      <node ref="C13" pin="1" pintype="passive"/>
+      <node ref="C14" pin="1" pintype="passive"/>
+      <node ref="D12" pin="1" pinfunction="K" pintype="passive"/>
+      <node ref="J4" pin="2" pinfunction="Vcc" pintype="power_in"/>
+      <node ref="J5" pin="2" pinfunction="Vcc" pintype="power_in"/>
+      <node ref="R1" pin="1" pintype="passive"/>
+      <node ref="R12" pin="1" pintype="passive"/>
+      <node ref="R2" pin="1" pintype="passive"/>
+      <node ref="U2" pin="1" pinfunction="IN" pintype="power_in"/>
+      <node ref="U3" pin="1" pinfunction="IN" pintype="power_in"/>
+    </net>
+    <net code="5" name="/D5_CO">
+      <node ref="D5" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D6" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="6" name="/D5_DO">
+      <node ref="D5" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D6" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="7" name="Accel_CS">
+      <node ref="R11" pin="2" pintype="passive"/>
+      <node ref="U1" pin="7" pinfunction="*CS" pintype="unspecified"/>
+    </net>
+    <net code="8" name="Accel_DI">
+      <node ref="U1" pin="13" pinfunction="SDA/SDI/SDIO" pintype="unspecified"/>
+    </net>
+    <net code="9" name="Accel_DO">
+      <node ref="U1" pin="12" pinfunction="SDO/ALTADDRESS" pintype="unspecified"/>
+    </net>
+    <net code="10" name="Accel_INT1">
+      <node ref="U1" pin="8" pinfunction="INT1" pintype="bidirectional"/>
+    </net>
+    <net code="11" name="Accel_INT2">
+      <node ref="U1" pin="9" pinfunction="INT2" pintype="bidirectional"/>
+    </net>
+    <net code="12" name="Accel_clock">
+      <node ref="U1" pin="14" pinfunction="SCL/SCLK" pintype="unspecified"/>
+    </net>
+    <net code="13" name="BATT">
+      <node ref="C21" pin="1" pintype="passive"/>
+      <node ref="D13" pin="1" pinfunction="K" pintype="passive"/>
+      <node ref="R12" pin="2" pintype="passive"/>
+      <node ref="R13" pin="1" pintype="passive"/>
+    </net>
+    <net code="14" name="D+">
+      <node ref="J1" pin="A6" pinfunction="D+" pintype="bidirectional"/>
+      <node ref="J1" pin="B6" pinfunction="D+" pintype="bidirectional"/>
+      <node ref="U5" pin="14" pinfunction="IO20" pintype="bidirectional"/>
+    </net>
+    <net code="15" name="D-">
+      <node ref="J1" pin="A7" pinfunction="D-" pintype="bidirectional"/>
+      <node ref="J1" pin="B7" pinfunction="D-" pintype="bidirectional"/>
+      <node ref="U5" pin="13" pinfunction="IO19" pintype="bidirectional"/>
+    </net>
+    <net code="16" name="ESC_data_L">
+      <node ref="R9" pin="2" pintype="passive"/>
+    </net>
+    <net code="17" name="ESC_data_R">
+      <node ref="R10" pin="2" pintype="passive"/>
+    </net>
+    <net code="18" name="GND">
+      <node ref="C1" pin="2" pintype="passive"/>
+      <node ref="C10" pin="2" pintype="passive"/>
+      <node ref="C11" pin="2" pintype="passive"/>
+      <node ref="C12" pin="1" pintype="passive"/>
+      <node ref="C13" pin="2" pintype="passive"/>
+      <node ref="C14" pin="2" pintype="passive"/>
+      <node ref="C15" pin="1" pintype="passive"/>
+      <node ref="C16" pin="1" pintype="passive"/>
+      <node ref="C17" pin="1" pintype="passive"/>
+      <node ref="C18" pin="1" pintype="passive"/>
+      <node ref="C19" pin="1" pintype="passive"/>
+      <node ref="C2" pin="2" pintype="passive"/>
+      <node ref="C20" pin="1" pintype="passive"/>
+      <node ref="C21" pin="2" pintype="passive"/>
+      <node ref="C3" pin="2" pintype="passive"/>
+      <node ref="C4" pin="2" pintype="passive"/>
+      <node ref="C5" pin="2" pintype="passive"/>
+      <node ref="C7" pin="2" pintype="passive"/>
+      <node ref="C8" pin="2" pintype="passive"/>
+      <node ref="C9" pin="2" pintype="passive"/>
+      <node ref="D1" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D10" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D11" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D13" pin="2" pinfunction="A" pintype="passive"/>
+      <node ref="D2" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D3" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D4" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D5" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D6" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D7" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D8" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="D9" pin="4" pinfunction="GND" pintype="power_in"/>
+      <node ref="H1" pin="1" pintype="input"/>
+      <node ref="H2" pin="1" pintype="input"/>
+      <node ref="H3" pin="1" pintype="input"/>
+      <node ref="J1" pin="1" pinfunction="Shell" pintype="power_in"/>
+      <node ref="J1" pin="A1" pinfunction="GND" pintype="power_in"/>
+      <node ref="J1" pin="A12" pinfunction="GND" pintype="power_in"/>
+      <node ref="J1" pin="B1" pinfunction="GND" pintype="power_in"/>
+      <node ref="J1" pin="B12" pinfunction="GND" pintype="power_in"/>
+      <node ref="J2" pin="1" pinfunction="GND" pintype="power_in"/>
+      <node ref="J3" pin="1" pinfunction="GND" pintype="power_in"/>
+      <node ref="J4" pin="1" pinfunction="GND" pintype="power_in"/>
+      <node ref="J5" pin="1" pinfunction="GND" pintype="power_in"/>
+      <node ref="R13" pin="2" pintype="passive"/>
+      <node ref="R4" pin="1" pintype="passive"/>
+      <node ref="R5" pin="2" pintype="passive"/>
+      <node ref="R6" pin="2" pintype="passive"/>
+      <node ref="SW1" pin="2" pintype="output"/>
+      <node ref="U1" pin="2" pinfunction="GND" pintype="power_out"/>
+      <node ref="U1" pin="4" pinfunction="GND" pintype="power_out"/>
+      <node ref="U1" pin="5" pinfunction="GND" pintype="power_out"/>
+      <node ref="U2" pin="2" pinfunction="GND" pintype="power_in"/>
+      <node ref="U3" pin="2" pinfunction="GND" pintype="power_in"/>
+      <node ref="U4" pin="2" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="1" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="40" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_1" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_2" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_3" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_4" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_5" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_6" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_7" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_8" pinfunction="GND" pintype="power_in"/>
+      <node ref="U5" pin="41_9" pinfunction="GND" pintype="power_in"/>
+    </net>
+    <net code="19" name="IR_out">
+      <node ref="U4" pin="1" pinfunction="OUT" pintype="output"/>
+    </net>
+    <net code="20" name="LED_clock">
+      <node ref="D1" pin="5" pinfunction="CI" pintype="input"/>
+      <node ref="D11" pin="5" pinfunction="CI" pintype="input"/>
+      <node ref="U5" pin="11" pinfunction="IO18" pintype="bidirectional"/>
+    </net>
+    <net code="21" name="LED_data">
+      <node ref="D1" pin="6" pinfunction="DI" pintype="input"/>
+      <node ref="D11" pin="6" pinfunction="DI" pintype="input"/>
+      <node ref="U5" pin="12" pinfunction="IO8" pintype="bidirectional"/>
+    </net>
+    <net code="22" name="Net-(BT1--)">
+      <node ref="BT1" pin="2" pinfunction="-" pintype="passive"/>
+      <node ref="BT2" pin="1" pinfunction="+" pintype="passive"/>
+    </net>
+    <net code="23" name="Net-(BT2--)">
+      <node ref="BT2" pin="2" pinfunction="-" pintype="passive"/>
+      <node ref="SW1" pin="1" pintype="input"/>
+    </net>
+    <net code="24" name="Net-(C6-Pad1)">
+      <node ref="C6" pin="1" pintype="passive"/>
+      <node ref="R4" pin="2" pintype="passive"/>
+      <node ref="SW2" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="SW3" pin="1" pinfunction="1" pintype="passive"/>
+    </net>
+    <net code="25" name="Net-(D1-CO)">
+      <node ref="D1" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D2" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="26" name="Net-(D1-DO)">
+      <node ref="D1" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D2" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="27" name="Net-(D2-CO)">
+      <node ref="D2" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D3" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="28" name="Net-(D2-DO)">
+      <node ref="D2" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D3" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="29" name="Net-(D3-CO)">
+      <node ref="D3" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D4" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="30" name="Net-(D3-DO)">
+      <node ref="D3" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D4" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="31" name="Net-(D4-CO)">
+      <node ref="D4" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D5" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="32" name="Net-(D4-DO)">
+      <node ref="D4" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D5" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="33" name="Net-(D6-CO)">
+      <node ref="D6" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D7" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="34" name="Net-(D6-DO)">
+      <node ref="D6" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D7" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="35" name="Net-(D7-CO)">
+      <node ref="D7" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D8" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="36" name="Net-(D7-DO)">
+      <node ref="D7" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D8" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="37" name="Net-(D8-CO)">
+      <node ref="D8" pin="2" pinfunction="CO" pintype="output"/>
+      <node ref="D9" pin="5" pinfunction="CI" pintype="input"/>
+    </net>
+    <net code="38" name="Net-(D8-DO)">
+      <node ref="D8" pin="3" pinfunction="DO" pintype="output"/>
+      <node ref="D9" pin="6" pinfunction="DI" pintype="input"/>
+    </net>
+    <net code="39" name="Net-(D10-CI)">
+      <node ref="D10" pin="5" pinfunction="CI" pintype="input"/>
+      <node ref="D9" pin="2" pinfunction="CO" pintype="output"/>
+    </net>
+    <net code="40" name="Net-(D10-DI)">
+      <node ref="D10" pin="6" pinfunction="DI" pintype="input"/>
+      <node ref="D9" pin="3" pinfunction="DO" pintype="output"/>
+    </net>
+    <net code="41" name="Net-(D12-A)">
+      <node ref="D12" pin="2" pinfunction="A" pintype="passive"/>
+      <node ref="J1" pin="A4" pinfunction="VBUS" pintype="power_in"/>
+      <node ref="J1" pin="A9" pinfunction="VBUS" pintype="power_in"/>
+      <node ref="J1" pin="B4" pinfunction="VBUS" pintype="power_in"/>
+      <node ref="J1" pin="B9" pinfunction="VBUS" pintype="power_in"/>
+    </net>
+    <net code="42" name="Net-(J1-CC1)">
+      <node ref="J1" pin="A5" pinfunction="CC1" pintype="bidirectional"/>
+      <node ref="R5" pin="1" pintype="passive"/>
+    </net>
+    <net code="43" name="Net-(J1-CC2)">
+      <node ref="J1" pin="B5" pinfunction="CC2" pintype="bidirectional"/>
+      <node ref="R6" pin="1" pintype="passive"/>
+    </net>
+    <net code="44" name="Net-(J2-Data)">
+      <node ref="J2" pin="2" pinfunction="Data" pintype="bidirectional"/>
+      <node ref="R10" pin="1" pintype="passive"/>
+    </net>
+    <net code="45" name="Net-(J3-Data)">
+      <node ref="J3" pin="2" pinfunction="Data" pintype="bidirectional"/>
+      <node ref="R9" pin="1" pintype="passive"/>
+    </net>
+    <net code="46" name="Net-(U1-VS)">
+      <node ref="C10" pin="1" pintype="passive"/>
+      <node ref="C11" pin="1" pintype="passive"/>
+      <node ref="R8" pin="2" pintype="passive"/>
+      <node ref="U1" pin="6" pinfunction="VS" pintype="unspecified"/>
+    </net>
+    <net code="47" name="Net-(U2-BP)">
+      <node ref="C1" pin="1" pintype="passive"/>
+      <node ref="U2" pin="4" pinfunction="BP" pintype="input"/>
+    </net>
+    <net code="48" name="Net-(U2-EN)">
+      <node ref="R1" pin="2" pintype="passive"/>
+      <node ref="U2" pin="3" pinfunction="EN" pintype="input"/>
+    </net>
+    <net code="49" name="Net-(U3-BP)">
+      <node ref="C3" pin="1" pintype="passive"/>
+      <node ref="U3" pin="4" pinfunction="BP" pintype="input"/>
+    </net>
+    <net code="50" name="Net-(U3-EN)">
+      <node ref="R2" pin="2" pintype="passive"/>
+      <node ref="U3" pin="3" pinfunction="EN" pintype="input"/>
+    </net>
+    <net code="51" name="Net-(U4-Vs)">
+      <node ref="C9" pin="1" pintype="passive"/>
+      <node ref="R7" pin="1" pintype="passive"/>
+      <node ref="U4" pin="3" pinfunction="Vs" pintype="power_in"/>
+    </net>
+    <net code="52" name="Net-(U5-EN)">
+      <node ref="C5" pin="1" pintype="passive"/>
+      <node ref="C6" pin="2" pintype="passive"/>
+      <node ref="R3" pin="1" pintype="passive"/>
+      <node ref="SW2" pin="2" pinfunction="2" pintype="passive"/>
+      <node ref="U5" pin="3" pinfunction="EN" pintype="input"/>
+    </net>
+    <net code="53" name="Net-(U5-IO0)">
+      <node ref="SW3" pin="2" pinfunction="2" pintype="passive"/>
+      <node ref="U5" pin="27" pinfunction="IO0" pintype="bidirectional"/>
+    </net>
+    <net code="54" name="unconnected-(D10-CO-Pad2)">
+      <node ref="D10" pin="2" pinfunction="CO" pintype="output"/>
+    </net>
+    <net code="55" name="unconnected-(D10-DO-Pad3)">
+      <node ref="D10" pin="3" pinfunction="DO" pintype="output"/>
+    </net>
+    <net code="56" name="unconnected-(D11-CO-Pad2)">
+      <node ref="D11" pin="2" pinfunction="CO" pintype="output"/>
+    </net>
+    <net code="57" name="unconnected-(D11-DO-Pad3)">
+      <node ref="D11" pin="3" pinfunction="DO" pintype="output"/>
+    </net>
+    <net code="58" name="unconnected-(J1-SBU1-PadA8)">
+      <node ref="J1" pin="A8" pinfunction="SBU1" pintype="bidirectional"/>
+    </net>
+    <net code="59" name="unconnected-(J1-SBU2-PadB8)">
+      <node ref="J1" pin="B8" pinfunction="SBU2" pintype="bidirectional"/>
+    </net>
+    <net code="60" name="unconnected-(U1-NC-Pad10)">
+      <node ref="U1" pin="10" pinfunction="NC" pintype="no_connect"/>
+    </net>
+    <net code="61" name="unconnected-(U1-RESERVED-Pad3)">
+      <node ref="U1" pin="3" pinfunction="RESERVED" pintype="unspecified"/>
+    </net>
+    <net code="62" name="unconnected-(U1-RESERVED-Pad11)">
+      <node ref="U1" pin="11" pinfunction="RESERVED" pintype="unspecified"/>
+    </net>
+    <net code="63" name="unconnected-(U5-IO1-Pad39)">
+      <node ref="U5" pin="39" pinfunction="IO1" pintype="bidirectional"/>
+    </net>
+    <net code="64" name="unconnected-(U5-IO2-Pad38)">
+      <node ref="U5" pin="38" pinfunction="IO2" pintype="bidirectional"/>
+    </net>
+    <net code="65" name="unconnected-(U5-IO3-Pad15)">
+      <node ref="U5" pin="15" pinfunction="IO3" pintype="bidirectional"/>
+    </net>
+    <net code="66" name="unconnected-(U5-IO4-Pad4)">
+      <node ref="U5" pin="4" pinfunction="IO4" pintype="bidirectional"/>
+    </net>
+    <net code="67" name="unconnected-(U5-IO5-Pad5)">
+      <node ref="U5" pin="5" pinfunction="IO5" pintype="bidirectional"/>
+    </net>
+    <net code="68" name="unconnected-(U5-IO6-Pad6)">
+      <node ref="U5" pin="6" pinfunction="IO6" pintype="bidirectional"/>
+    </net>
+    <net code="69" name="unconnected-(U5-IO7-Pad7)">
+      <node ref="U5" pin="7" pinfunction="IO7" pintype="bidirectional"/>
+    </net>
+    <net code="70" name="unconnected-(U5-IO9-Pad17)">
+      <node ref="U5" pin="17" pinfunction="IO9" pintype="bidirectional"/>
+    </net>
+    <net code="71" name="unconnected-(U5-IO10-Pad18)">
+      <node ref="U5" pin="18" pinfunction="IO10" pintype="bidirectional"/>
+    </net>
+    <net code="72" name="unconnected-(U5-IO11-Pad19)">
+      <node ref="U5" pin="19" pinfunction="IO11" pintype="bidirectional"/>
+    </net>
+    <net code="73" name="unconnected-(U5-IO12-Pad20)">
+      <node ref="U5" pin="20" pinfunction="IO12" pintype="bidirectional"/>
+    </net>
+    <net code="74" name="unconnected-(U5-IO13-Pad21)">
+      <node ref="U5" pin="21" pinfunction="IO13" pintype="bidirectional"/>
+    </net>
+    <net code="75" name="unconnected-(U5-IO14-Pad22)">
+      <node ref="U5" pin="22" pinfunction="IO14" pintype="bidirectional"/>
+    </net>
+    <net code="76" name="unconnected-(U5-IO15-Pad8)">
+      <node ref="U5" pin="8" pinfunction="IO15" pintype="bidirectional"/>
+    </net>
+    <net code="77" name="unconnected-(U5-IO16-Pad9)">
+      <node ref="U5" pin="9" pinfunction="IO16" pintype="bidirectional"/>
+    </net>
+    <net code="78" name="unconnected-(U5-IO17-Pad10)">
+      <node ref="U5" pin="10" pinfunction="IO17" pintype="bidirectional"/>
+    </net>
+    <net code="79" name="unconnected-(U5-IO21-Pad23)">
+      <node ref="U5" pin="23" pinfunction="IO21" pintype="bidirectional"/>
+    </net>
+    <net code="80" name="unconnected-(U5-IO35-Pad28)">
+      <node ref="U5" pin="28" pinfunction="IO35" pintype="bidirectional"/>
+    </net>
+    <net code="81" name="unconnected-(U5-IO36-Pad29)">
+      <node ref="U5" pin="29" pinfunction="IO36" pintype="bidirectional"/>
+    </net>
+    <net code="82" name="unconnected-(U5-IO37-Pad30)">
+      <node ref="U5" pin="30" pinfunction="IO37" pintype="bidirectional"/>
+    </net>
+    <net code="83" name="unconnected-(U5-IO38-Pad31)">
+      <node ref="U5" pin="31" pinfunction="IO38" pintype="bidirectional"/>
+    </net>
+    <net code="84" name="unconnected-(U5-IO39-Pad32)">
+      <node ref="U5" pin="32" pinfunction="IO39" pintype="bidirectional"/>
+    </net>
+    <net code="85" name="unconnected-(U5-IO40-Pad33)">
+      <node ref="U5" pin="33" pinfunction="IO40" pintype="bidirectional"/>
+    </net>
+    <net code="86" name="unconnected-(U5-IO41-Pad34)">
+      <node ref="U5" pin="34" pinfunction="IO41" pintype="bidirectional"/>
+    </net>
+    <net code="87" name="unconnected-(U5-IO42-Pad35)">
+      <node ref="U5" pin="35" pinfunction="IO42" pintype="bidirectional"/>
+    </net>
+    <net code="88" name="unconnected-(U5-IO45-Pad26)">
+      <node ref="U5" pin="26" pinfunction="IO45" pintype="bidirectional"/>
+    </net>
+    <net code="89" name="unconnected-(U5-IO46-Pad16)">
+      <node ref="U5" pin="16" pinfunction="IO46" pintype="bidirectional"/>
+    </net>
+    <net code="90" name="unconnected-(U5-IO47-Pad24)">
+      <node ref="U5" pin="24" pinfunction="IO47" pintype="bidirectional"/>
+    </net>
+    <net code="91" name="unconnected-(U5-IO48-Pad25)">
+      <node ref="U5" pin="25" pinfunction="IO48" pintype="bidirectional"/>
+    </net>
+    <net code="92" name="unconnected-(U5-RXD0-Pad36)">
+      <node ref="U5" pin="36" pinfunction="RXD0" pintype="bidirectional"/>
+    </net>
+    <net code="93" name="unconnected-(U5-TXD0-Pad37)">
+      <node ref="U5" pin="37" pinfunction="TXD0" pintype="bidirectional"/>
+    </net>
+  </nets>
+</export>
