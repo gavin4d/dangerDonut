@@ -8,20 +8,25 @@
 #include <DShotRMT.h>
 #include <driver/timer.h>
 #include <Freenove_WS2812_Lib_for_ESP32.h>
-#include <apa102.h>
+#include <HD107S.h>
 #include <uni_log.h>
 
 #include "orientator.h"
 
-#define LED_COUNT 1U
-#define LED_PIN GPIO_NUM_48
+#define LED_COUNT 11U
+#define LED_DATA_PIN GPIO_NUM_8
+#define LED_CLOCK_PIN GPIO_NUM_18
 #define LED_STRIP_RMT_INTR_NUM 11U
 #define RMT_CHANNEL	RMT_CHANNEL_0
 
 #define LEFT_DSHOT_RMT_CHANNEL RMT_CHANNEL_1
-#define LEFT_DSHOT_GPIO GPIO_NUM_16
+#define LEFT_DSHOT_GPIO GPIO_NUM_10
 #define RIGHT_DSHOT_RMT_CHANNEL RMT_CHANNEL_2
-#define RIGHT_DSHOT_GPIO GPIO_NUM_17
+#define RIGHT_DSHOT_GPIO GPIO_NUM_9 
+
+#define BATTERY_SENSE GPIO_NUM_12
+
+#define IR_PIN GPIO_NUM_11
 
 #define CONTROLLER_RESPONSE_TIMEOUT 3000000U
 #define STICK_DEAD_ZONE 0.1
@@ -104,12 +109,14 @@ uint32_t spin_data[128];
 int readCounter = 0;
 int cooldown = 0;
 orientator sensor;
+HD107S LED;
 // Arduino setup function. Runs in CPU 1
 void setup() {
-
-    LEDSTRIP.init(1);
-    pinMode(10, OUTPUT);
-    pinMode(18, OUTPUT);
+    hd107s_config_t LED_config;
+    LED_config.dataPin = LED_DATA_PIN;
+    LED_config.clockPin = LED_CLOCK_PIN;
+    LED_config.numLEDs = LED_COUNT;
+    LED.setup(LED_config);
 
     Console.printf("Firmware: %s\n", BP32.firmwareVersion());
     const uint8_t* addr = BP32.localBdAddress();
@@ -129,10 +136,10 @@ void setup() {
     //esp_timer_create(&create_timer, &test_timer);
     //esp_timer_start_periodic(test_timer, 3000000);
 
-    sensor.setup(9);
+    sensor.setup(IR_PIN);
 
-    LEDSTRIP.txbuffer[1] = RGBL(0, 0, 0, 0);
-    LEDSTRIP.update();
+    //LED.setLED(4, RGBL(255, 255, 255, 16));
+    //LED.update();
 }
 
 // Arduino loop function. Runs in CPU 1
@@ -154,8 +161,8 @@ void loop() {
     //Console.println(sensor.getPeriod());
     hue += 0.1;
     if (hue >= 360) hue = 0;
-    LEDSTRIP.leds[0] = HSV(hue, 1, 0.05, 8);
-    LEDSTRIP.update();
+    LED.setLED(0, LED.HSVL(hue, 1, 0.2, 9));
+    LED.update();
 
     if (myGamepad && myGamepad->isConnected()) {
 
@@ -214,11 +221,7 @@ void loop() {
                 }
             }
 
-            if (myGamepad->x()) {
-                digitalWrite(18, digitalRead(9));
-            } else {
-                digitalWrite(18, sensor.getOrientation() < 0.2);
-            }
+                LED.setLED(1,  RGBL(0, sensor.getOrientation() < 0.2 ? 255 : 0, digitalRead(IR_PIN) ? 255 : 0,8));
 
             if (myGamepad->left()) {
                 if (!buttons[1]) {
