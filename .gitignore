@@ -1,6 +1,12 @@
 build/
-PCB/DangerDonut-backups/
-PCB/~DangerDonut.kicad_sch.lck
+PCB/MainBoard/DangerDonut-backups/
+PCB/MainBoard/~DangerDonut.kicad_sch.lck
+PCB/MainBoard/~DangerDonut.kicad_pcb.lck
+PCB/MainBoard/production
+PCB/MainBoard/gerbers
+PCB/Beacon/Beacon-backups
+PCB/Beacon/production
+components/Adafruit_ADXL375-master
 sdkconfig.old
 sdkconfig
 *.o
