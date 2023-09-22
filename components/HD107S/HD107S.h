@@ -18,9 +18,9 @@ struct hd107s_config_t{
     uint8_t dataPin;
     uint8_t clockPin;
     uint16_t numLEDs = 1;
-    uint16_t clockSpeed = 1000000;
+    uint32_t clockSpeed = 1000000;
     uint8_t DMAChannel = SPI_DMA_CH_AUTO;
-    spi_host_device_t SPIHost = SPI2_HOST;
+    spi_host_device_t SPIHost = SPI3_HOST;
 };
 
 class HD107S {

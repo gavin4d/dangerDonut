@@ -18,12 +18,13 @@ void HD107S::setup(hd107s_config_t config) {
 	HD107S::DMAChannel = config.DMAChannel;
 	HD107S::SPIHost = config.SPIHost;
 	HD107S::clockSpeed = config.clockSpeed;
+	bus_config = {0};
 	bus_config.miso_io_num = -1;
 	bus_config.mosi_io_num = config.dataPin;
 	bus_config.sclk_io_num = config.clockPin;
 	bus_config.quadwp_io_num = -1;
 	bus_config.quadhd_io_num = -1;
-	dev_config={0};
+	dev_config = {0};
 	dev_config.clock_speed_hz = config.clockSpeed;
 	dev_config.mode = 3;
 	dev_config.spics_io_num = -1;
