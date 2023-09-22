@@ -9,6 +9,7 @@
 #include <driver/timer.h>
 #include <Freenove_WS2812_Lib_for_ESP32.h>
 #include <HD107S.h>
+#include <ADXL375.h>
 #include <uni_log.h>
 
 #include "orientator.h"
@@ -27,6 +28,11 @@
 #define BATTERY_SENSE GPIO_NUM_12
 
 #define IR_PIN GPIO_NUM_11
+
+#define ADXL_MISO_PIN GPIO_NUM_21
+#define ADXL_MOSI_PIN GPIO_NUM_14
+#define ADXL_CLOCK_PIN GPIO_NUM_13
+#define ADXL_CS_PIN GPIO_NUM_38
 
 #define CONTROLLER_RESPONSE_TIMEOUT 3000000U
 #define STICK_DEAD_ZONE 0.1
@@ -49,7 +55,7 @@
 
 GamepadPtr myGamepad;
 DShotRMT esc_l, esc_r;
-boolean buttons[3] = {false, false, false}; // B, <-, ->
+boolean buttons[5] = {false, false, false, false, false}; // B, <-, ->, ^, v
 bool controller_idle = false;
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
@@ -108,6 +114,7 @@ void setMotorPower(float left_power, float right_power) {
 uint32_t spin_data[128];
 int readCounter = 0;
 int cooldown = 0;
+ADXL375 ADXL;
 orientator sensor;
 HD107S LED;
 // Arduino setup function. Runs in CPU 1
@@ -117,6 +124,22 @@ void setup() {
     LED_config.clockPin = LED_CLOCK_PIN;
     LED_config.numLEDs = LED_COUNT;
     LED.setup(LED_config);
+    // for (int i = 0; i < 11; i++) {
+    //     LED.setLED(i, RGBL(255,255,255,8));
+    // }
+    // LED.update();
+
+    adxl375_spi_config_t adxl_config;
+    adxl_config.clockPin = ADXL_CLOCK_PIN;
+    adxl_config.misoPin = ADXL_MISO_PIN;
+    adxl_config.mosiPin = ADXL_MOSI_PIN;
+    adxl_config.csPin = ADXL_CS_PIN;
+    Console.println("testing ADXL");
+    if (ADXL.setup(adxl_config)) {
+        Console.println("device found");
+    } else {
+        Console.println("error with adxl375");
+    }
 
     Console.printf("Firmware: %s\n", BP32.firmwareVersion());
     const uint8_t* addr = BP32.localBdAddress();
@@ -126,7 +149,6 @@ void setup() {
     BP32.setup(&onConnectedGamepad, &onDisconnectedGamepad);
 
     BP32.forgetBluetoothKeys();
-
     esc_l.install(LEFT_DSHOT_GPIO, LEFT_DSHOT_RMT_CHANNEL);
     esc_r.install(RIGHT_DSHOT_GPIO, RIGHT_DSHOT_RMT_CHANNEL);
     //esc_l.init(true);
@@ -136,10 +158,15 @@ void setup() {
     //esp_timer_create(&create_timer, &test_timer);
     //esp_timer_start_periodic(test_timer, 3000000);
 
-    sensor.setup(IR_PIN);
+    sensor.setup(IR_PIN, ADXL);
 
+    sensor.orientationTimeStamp = esp_timer_get_time();
     //LED.setLED(4, RGBL(255, 255, 255, 16));
     //LED.update();
+    
+    for (int i = 0; i < 11; i++) {
+        LED.setLED(i, RGBL(0,0,0,0));
+    }
 }
 
 // Arduino loop function. Runs in CPU 1
@@ -153,7 +180,11 @@ void loop() {
 
     if (cooldown <= 0) {
         sensor.updatePeriod();
+        //LED.setLED(4, RGBL(127,0,0, sensor.useAccel ? 8 : 0));
+        //LED.setLED(7, RGBL(0,127,0, sensor.useIR ? 8 : 0));
         sensor.updateOrientation();
+        //LED.setLED(3, RGBL(127,127,0, sensor.useAccel ? 8 : 0));
+        //LED.setLED(6, RGBL(0,127,127, sensor.useIR ? 8 : 0));
         cooldown = 32;
     } else {
         cooldown--;
@@ -221,7 +252,10 @@ void loop() {
                 }
             }
 
-                LED.setLED(1,  RGBL(0, sensor.getOrientation() < 0.2 ? 255 : 0, digitalRead(IR_PIN) ? 255 : 0,8));
+            boolean isForwards = sensor.getOrientation() < 0.2;
+            boolean isIR = !digitalRead(IR_PIN);
+            for (int i = 1; i < 8; i++)
+                LED.setLED(i,  RGBL(0, isForwards ? 255 : 0, isIR ? 127 : 0,16));
 
             if (myGamepad->left()) {
                 if (!buttons[1]) {
@@ -241,6 +275,26 @@ void loop() {
                 }
             } else {
                 buttons[2] = false;
+            }
+
+            if (myGamepad->up()) {
+                if (!buttons[3]) {
+                    buttons[3] = true;
+                    sensor.setAccelPos(sensor.getAccelPos() + 0.0001);
+                    Console.printf("AccelPos: %f\n", sensor.getAccelPos());
+                }
+            } else {
+                buttons[3] = false;
+            }
+
+            if (myGamepad->down()) {
+                if (!buttons[4]) {
+                    buttons[4] = true;
+                    sensor.setAccelPos(sensor.getAccelPos() - 0.0001);
+                    Console.printf("AccelPos: %f\n", sensor.getAccelPos());
+                }
+            } else {
+                buttons[4] = false;
             }
 
             if (myGamepad->miscHome()) {
