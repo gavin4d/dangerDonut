@@ -1,3 +1,5 @@
+#ifndef HD107S_H
+#define HD107S_H
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -11,6 +13,7 @@
 typedef uint32_t hd107s_color_t;
 
 #define HD107S_RGBL(r,g,b,lum) (((b & 0xFF)<<16) | ((g & 0xFF)<<8) | (r & 0xFF) | ((((lum & 0xFF) >> 3) | 0xE0) << 24))
+#define HD107S_INTL(int,lum) (((int & 0xFF)<<16) | (((int >> 8) & 0xFF)<<8) | ((int >> 16) & 0xFF) | ((((lum & 0xFF) >> 3) | 0xE0) << 24))
 
 #define RGBL  HD107S_RGBL
 
@@ -28,6 +31,7 @@ class HD107S {
     public:
         HD107S();
         ~HD107S();
+		HD107S& operator=(const HD107S &inputHD107S);
 
         void setup(hd107s_config_t config);
         void setLED(uint16_t index, hd107s_color_t color);
@@ -45,3 +49,4 @@ class HD107S {
         spi_transaction_t transaction;
         spi_device_handle_t device;
 };
+#endif

@@ -10,4 +10,4 @@ endif()
 
 idf_component_register(SRCS "${srcs}"
                     INCLUDE_DIRS "."
-                    REQUIRES "${requires}" "DShotRMT" "ADXL375" "HD107S" "Freenove_WS2812_Lib_for_ESP32" "orientator")
+                    REQUIRES "${requires}" "DShotRMT" "ADXL375" "HD107S" "POVDisplay" "orientator")

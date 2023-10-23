@@ -7,10 +7,10 @@
 #include <Bluepad32.h>
 #include <DShotRMT.h>
 #include <driver/timer.h>
-#include <Freenove_WS2812_Lib_for_ESP32.h>
 #include <HD107S.h>
 #include <ADXL375.h>
 #include <uni_log.h>
+#include <POVDisplay.h>
 
 #include "orientator.h"
 
@@ -18,12 +18,13 @@
 #define LED_DATA_PIN GPIO_NUM_8
 #define LED_CLOCK_PIN GPIO_NUM_18
 #define LED_STRIP_RMT_INTR_NUM 11U
+#define LED_CLOCK_SPEED 32000000
 #define RMT_CHANNEL	RMT_CHANNEL_0
 
 #define LEFT_DSHOT_RMT_CHANNEL RMT_CHANNEL_1
-#define LEFT_DSHOT_GPIO GPIO_NUM_10
+#define LEFT_DSHOT_GPIO GPIO_NUM_9
 #define RIGHT_DSHOT_RMT_CHANNEL RMT_CHANNEL_2
-#define RIGHT_DSHOT_GPIO GPIO_NUM_9 
+#define RIGHT_DSHOT_GPIO GPIO_NUM_10 
 
 #define BATTERY_SENSE GPIO_NUM_12
 
@@ -55,8 +56,10 @@
 
 GamepadPtr myGamepad;
 DShotRMT esc_l, esc_r;
-boolean buttons[5] = {false, false, false, false, false}; // B, <-, ->, ^, v
+bool buttons[5] = {false, false, false, false, false}; // B, <-, ->, ^, v
 bool controller_idle = false;
+int spinDirection = 1; // 1: clockwise, -1: withershin
+double offset = 0.15;
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
 
@@ -117,17 +120,58 @@ int cooldown = 0;
 ADXL375 ADXL;
 orientator sensor;
 HD107S LED;
+//esp_timer_handle_t clearLEDsTimer;
+POVDisplay display;
+
+void zeroHeadingCallback() {
+    double period =  sensor.getPeriod();
+    display.clear();
+    display.setPixel(0,10, 0xff00ff00);
+    display.setPixel(1,10, 0xff00ff00);
+    display.setPixel(0,9, 0xff00ff00);
+    display.setPixel(1,9, 0xff00ff00);
+    int RPM = 60000/period;
+    if (RPM >= 1000) display.drawSprite(28, 0, RPM/1000 % 10);
+    if (RPM >= 100) display.drawSprite(35, 0, RPM/100 % 10);
+    if (RPM >= 10) display.drawSprite(43, 0, RPM/10 % 10);
+    display.drawSprite(50, 0, RPM % 10);
+    for (int i = 2; i < 84; i++) {
+        display.setPixel(i, 10, sensor.getIRData(i*period/84) ? 0xff000000 : 0xff0000ff);
+    }
+    display.makeFrame(period, spinDirection);
+    // for (int i = 1; i < 11; i++)
+    //     LED.setLED(i,  RGBL(0, 255, 0,16));
+    // LED.update();
+    // esp_timer_start_once(clearLEDsTimer, sensor.getPeriod()/84);
+}
+
+void clearLightsCallback(void *args) {
+    for (int i = 1; i < 11; i++)
+        LED.setLED(i,  RGBL(0, 0, 0,16));
+    LED.update();
+} 
+
 // Arduino setup function. Runs in CPU 1
 void setup() {
+
+    // esp_timer_create_args_t new_timer;
+    // new_timer.callback = &clearLightsCallback;
+    // new_timer.dispatch_method = ESP_TIMER_TASK;
+    // esp_timer_create(&new_timer, &clearLEDsTimer);
+
     hd107s_config_t LED_config;
     LED_config.dataPin = LED_DATA_PIN;
     LED_config.clockPin = LED_CLOCK_PIN;
     LED_config.numLEDs = LED_COUNT;
-    LED.setup(LED_config);
-    // for (int i = 0; i < 11; i++) {
-    //     LED.setLED(i, RGBL(255,255,255,8));
-    // }
-    // LED.update();
+    LED_config.clockSpeed = LED_CLOCK_SPEED;
+    //LED.setup(LED_config);
+
+    display = POVDisplay(LED_config);
+    display.setPixel(0,10, 0xff00ff00);
+    display.setPixel(1,10, 0xff00ff00);
+    display.setPixel(0,9, 0xff00ff00);
+    display.setPixel(1,9, 0xff00ff00);
+    //display.drawSprite(40,0,10);
 
     adxl375_spi_config_t adxl_config;
     adxl_config.clockPin = ADXL_CLOCK_PIN;
@@ -151,22 +195,17 @@ void setup() {
     BP32.forgetBluetoothKeys();
     esc_l.install(LEFT_DSHOT_GPIO, LEFT_DSHOT_RMT_CHANNEL);
     esc_r.install(RIGHT_DSHOT_GPIO, RIGHT_DSHOT_RMT_CHANNEL);
-    //esc_l.init(true);
-    //esc_r.init(true);
-    //create_timer.callback = &controllerDisconnectedCallback;
-    //create_timer.dispatch_method = ESP_TIMER_TASK;
-    //esp_timer_create(&create_timer, &test_timer);
-    //esp_timer_start_periodic(test_timer, 3000000);
 
     sensor.setup(IR_PIN, ADXL);
+    sensor.setCallback(&zeroHeadingCallback);
 
-    sensor.orientationTimeStamp = esp_timer_get_time();
+    //sensor.orientationTimeStamp = esp_timer_get_time();
     //LED.setLED(4, RGBL(255, 255, 255, 16));
     //LED.update();
     
-    for (int i = 0; i < 11; i++) {
-        LED.setLED(i, RGBL(0,0,0,0));
-    }
+    // for (int i = 0; i < 11; i++) {
+    //     LED.setLED(i, RGBL(0,0,0,0));
+    // }
 }
 
 // Arduino loop function. Runs in CPU 1
@@ -176,7 +215,9 @@ void loop() {
     // Just call this function in your main loop.
     // The gamepads pointer (the ones received in the callbacks) gets updated
     // automatically.
+    //uint64_t loopStart = esp_timer_get_time();
     BP32.update();
+
 
     if (cooldown <= 0) {
         sensor.updatePeriod();
@@ -189,11 +230,11 @@ void loop() {
     } else {
         cooldown--;
     }
+    //ESP_LOGI("orienation", "%f", sensor.getOrientation());
     //Console.println(sensor.getPeriod());
     hue += 0.1;
     if (hue >= 360) hue = 0;
-    LED.setLED(0, LED.HSVL(hue, 1, 0.2, 9));
-    LED.update();
+    // LED.setLED(0, LED.HSVL(hue, 1, 0.2, 9));
 
     if (myGamepad && myGamepad->isConnected()) {
 
@@ -206,7 +247,8 @@ void loop() {
             float y = -((float)myGamepad->axisY())/512;
             float x = ((float)myGamepad->axisX())/512;
             float r = ((float)myGamepad->axisRX())/512;
-            float spin_power = -((float)(myGamepad->throttle() - myGamepad->brake()))/1024;
+            float spin_power = ((float)(myGamepad->throttle() - myGamepad->brake()))/1024;
+            spinDirection = copysignf(1.0, spin_power);
             if (abs(spin_power) < SPIN_POWER_THRESHOLD) { // run in tank drive if not spinning
                 if (abs(y) > STICK_DEAD_ZONE) {
                     left_power += y * DRIVE_SENSITIVITY;
@@ -219,9 +261,10 @@ void loop() {
             } else { // melty mode
                 float hypot = hypotf(x,y);
                 if (hypot < STICK_DEAD_ZONE) hypot = 0;
-                const float theta = atan2f(y,x);
-                left_power = spin_power + 0.25*hypot*sin(copysignf(1.0, spin_power)*sensor.getOrientation() + theta);
-                right_power = spin_power - 0.25*hypot*sin(copysignf(1.0, spin_power)*sensor.getOrientation() + theta);
+                const float theta = atan2f(y,x) + offset*2*PI;
+                const float meltyPower = 0.25*hypot*sin(spinDirection*sensor.getOrientation() + theta);
+                left_power = spin_power + meltyPower;
+                right_power = spin_power - meltyPower;
             }
 
             if (abs(left_power) > 1 || abs(right_power) > 1) {
@@ -252,15 +295,16 @@ void loop() {
                 }
             }
 
-            boolean isForwards = sensor.getOrientation() < 0.2;
-            boolean isIR = !digitalRead(IR_PIN);
-            for (int i = 1; i < 8; i++)
-                LED.setLED(i,  RGBL(0, isForwards ? 255 : 0, isIR ? 127 : 0,16));
-
+            //boolean isForwards = sensor.getOrientation() < 0.2;
+            //boolean isIR = !digitalRead(IR_PIN);
+            // for (int i = 1; i < 11; i++)
+            //     LED.setLED(i,  RGBL(0, isForwards ? 255 : 0, isIR ? 127 : 0,16));
+            // LED.update();
             if (myGamepad->left()) {
                 if (!buttons[1]) {
                     buttons[1] = true;
-                    sensor.setOffset(sensor.getOffset() + 0.05);
+                    //sensor.setOffset(sensor.getOffset() + 0.05);
+                    offset = (offset + 0.05)-floor(offset + 0.05);
                     Console.printf("offset: %f\n", sensor.getOffset());
                 }
             } else {
@@ -270,7 +314,8 @@ void loop() {
             if (myGamepad->right()) {
                 if (!buttons[2]) {
                     buttons[2] = true;
-                    sensor.setOffset(sensor.getOffset() - 0.05);
+                    //sensor.setOffset(sensor.getOffset() - 0.05);
+                    offset = (offset - 0.05)-floor(offset - 0.05);
                     Console.printf("offset: %f\n", sensor.getOffset());
                 }
             } else {
@@ -311,4 +356,5 @@ void loop() {
     // https://stackoverflow.com/questions/66278271/task-watchdog-got-triggered-the-tasks-did-not-reset-the-watchdog-in-time
     vTaskDelay(1);
     //delay(15);
+    //ESP_LOGI("loop time", "%li\n", (long)(esp_timer_get_time()-loopStart));
 }

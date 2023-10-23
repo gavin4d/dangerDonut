@@ -11,7 +11,8 @@
                 "${workspaceFolder}/components/arduino/tools/sdk/esp32/include/newlib/platform_include",
                 "${workspaceFolder}/components/DShotRMT",
                 "C:/Users/crazz/esp/esp-idf/components/newlib/platform_include",
-                "${workspaceFolder}/components/arduino"
+                "${workspaceFolder}/components/arduino",
+                "${workspaceFolder}/components/arduino/libraries/SPI/src"
             ],
             "defines": [
                 "_DEBUG",
