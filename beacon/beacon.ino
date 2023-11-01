@@ -2,7 +2,7 @@ void setup() {
   // using timer 1
   DDRB = 1<<DDB1; // PB1 as output
   TCCR1 = 1<<CTC1 | 1<<COM1A0 | 1<<CS11; // CTC mode, toggle OC1A (PB1), divide by 2 prescaler
-  OCR1C = 212; // 38 kHz   32,000,000 / (2*2*(1+210))
+  OCR1C = 226; // 38 kHz   32,000,000 / (2*2*(1+210))
 
 
   // using timer 0
