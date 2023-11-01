@@ -1,6 +1,6 @@
 # Danger Donut
 
-![robot CAD picture](https://cdn.discordapp.com/attachments/1142868654753587321/1154320153077628928/image.png)
+![robot animation](https://cdn.discordapp.com/attachments/928094826765885462/1157603658247196702/gifmaker_me_1.gif?ex=651935eb&is=6517e46b&hm=04103609ccefb9c02dac96ba313ba97bac69ed15004168b3347017d52bfe51d7&)
 
 Danger Donut is a work-in-progress 150 gram melty brain combat robot.
 
