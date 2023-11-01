@@ -6,7 +6,8 @@ PCB/MainBoard/production
 PCB/MainBoard/gerbers
 PCB/Beacon/Beacon-backups
 PCB/Beacon/production
-components/Adafruit_ADXL375-master
+components/POVDisplay/input.png*
+managed_components/
 sdkconfig.old
 sdkconfig
 *.o

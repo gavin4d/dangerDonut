@@ -59,7 +59,7 @@ DShotRMT esc_l, esc_r;
 bool buttons[5] = {false, false, false, false, false}; // B, <-, ->, ^, v
 bool controller_idle = false;
 int spinDirection = 1; // 1: clockwise, -1: withershin
-double offset = 0.15;
+double offset = 0.0;
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
 
@@ -114,9 +114,12 @@ void setMotorPower(float left_power, float right_power) {
     }
 }
 
-uint32_t spin_data[128];
+double velocity_data[1000];
+double angle_data[1000];
+double time_data[1001];
 int readCounter = 0;
 int cooldown = 0;
+uint8_t decor = 0;
 ADXL375 ADXL;
 orientator sensor;
 HD107S LED;
@@ -126,18 +129,19 @@ POVDisplay display;
 void zeroHeadingCallback() {
     double period =  sensor.getPeriod();
     display.clear();
-    display.setPixel(0,10, 0xff00ff00);
-    display.setPixel(1,10, 0xff00ff00);
-    display.setPixel(0,9, 0xff00ff00);
-    display.setPixel(1,9, 0xff00ff00);
-    int RPM = 60000/period;
-    if (RPM >= 1000) display.drawSprite(28, 0, RPM/1000 % 10);
-    if (RPM >= 100) display.drawSprite(35, 0, RPM/100 % 10);
-    if (RPM >= 10) display.drawSprite(43, 0, RPM/10 % 10);
-    display.drawSprite(50, 0, RPM % 10);
-    for (int i = 2; i < 84; i++) {
-        display.setPixel(i, 10, sensor.getIRData(i*period/84) ? 0xff000000 : 0xff0000ff);
-    }
+    display.drawSprite(0,1,11);
+    display.setPixel(0,10, 0xff0000ff);
+    display.setPixel(1,10, 0xff0000ff);
+    display.setPixel(0,9, 0xff0000ff);
+    display.setPixel(1,9, 0xff0000ff);
+    // int RPM = 60000/period;
+    // if (RPM >= 1000) display.drawSprite(28, 0, RPM/1000 % 10);
+    // if (RPM >= 100) display.drawSprite(35, 0, RPM/100 % 10);
+    // if (RPM >= 10) display.drawSprite(43, 0, RPM/10 % 10);
+    // display.drawSprite(50, 0, RPM % 10);
+    // for (int i = 2; i < 84; i++) {
+    //     display.setPixel(i, 10, sensor.getIRData(i*period/84) ? 0xff000000 : 0xff0000ff);
+    // }
     display.makeFrame(period, spinDirection);
     // for (int i = 1; i < 11; i++)
     //     LED.setLED(i,  RGBL(0, 255, 0,16));
@@ -167,10 +171,11 @@ void setup() {
     //LED.setup(LED_config);
 
     display = POVDisplay(LED_config);
-    display.setPixel(0,10, 0xff00ff00);
-    display.setPixel(1,10, 0xff00ff00);
-    display.setPixel(0,9, 0xff00ff00);
-    display.setPixel(1,9, 0xff00ff00);
+    display.setBrightness(64);
+    display.setPixel(0,10, 0xff0000ff);
+    display.setPixel(1,10, 0xff0000ff);
+    display.setPixel(0,9, 0xff0000ff);
+    display.setPixel(1,9, 0xff0000ff);
     //display.drawSprite(40,0,10);
 
     adxl375_spi_config_t adxl_config;
@@ -180,7 +185,7 @@ void setup() {
     adxl_config.csPin = ADXL_CS_PIN;
     Console.println("testing ADXL");
     if (ADXL.setup(adxl_config)) {
-        Console.println("device found");
+        Console.println("adxl375 sensor found");
     } else {
         Console.println("error with adxl375");
     }
@@ -199,7 +204,7 @@ void setup() {
     sensor.setup(IR_PIN, ADXL);
     sensor.setCallback(&zeroHeadingCallback);
 
-    //sensor.orientationTimeStamp = esp_timer_get_time();
+    //sensor.zeroCrossingTime = esp_timer_get_time();
     //LED.setLED(4, RGBL(255, 255, 255, 16));
     //LED.update();
     
@@ -219,18 +224,19 @@ void loop() {
     BP32.update();
 
 
+    double logVelocity = 0;
+    double logAngle = 0;
     if (cooldown <= 0) {
-        sensor.updatePeriod();
+        sensor.update(logAngle, logVelocity);
         //LED.setLED(4, RGBL(127,0,0, sensor.useAccel ? 8 : 0));
         //LED.setLED(7, RGBL(0,127,0, sensor.useIR ? 8 : 0));
-        sensor.updateOrientation();
         //LED.setLED(3, RGBL(127,127,0, sensor.useAccel ? 8 : 0));
         //LED.setLED(6, RGBL(0,127,127, sensor.useIR ? 8 : 0));
-        cooldown = 32;
+        cooldown = 4;
     } else {
         cooldown--;
     }
-    //ESP_LOGI("orienation", "%f", sensor.getOrientation());
+    //ESP_LOGI("orienation", "%f", sensor.getAngle());
     //Console.println(sensor.getPeriod());
     hue += 0.1;
     if (hue >= 360) hue = 0;
@@ -262,7 +268,7 @@ void loop() {
                 float hypot = hypotf(x,y);
                 if (hypot < STICK_DEAD_ZONE) hypot = 0;
                 const float theta = atan2f(y,x) + offset*2*PI;
-                const float meltyPower = 0.25*hypot*sin(spinDirection*sensor.getOrientation() + theta);
+                const float meltyPower = 0.25*hypot*sin(spinDirection*sensor.getAngle() + theta);
                 left_power = spin_power + meltyPower;
                 right_power = spin_power - meltyPower;
             }
@@ -278,8 +284,8 @@ void loop() {
                 if (!buttons[0]) {
                     buttons[0] = true;
                     //sensor.fillArray(spin_data);
-                    for (int i = 0; i < 128; i++) {
-                        Console.printf("%d, ", spin_data[i]);
+                    for (int i = 0; i < 1000; i++) {
+                        Console.printf("%lf	%lf	%lf	\n", angle_data[i], velocity_data[i], time_data[i+1]-time_data[i]);
                     }
                     Console.print("\n");
                 }
@@ -288,14 +294,15 @@ void loop() {
             }
 
             if (myGamepad->a()) {
-                if (readCounter < 128) {
-                    sensor.updatePeriod();
-                    spin_data[readCounter] = sensor.getPeriod();
+                if (readCounter < 1000 && logVelocity > 0.1) {
+                    velocity_data[readCounter] = logVelocity;
+                    angle_data[readCounter] = logAngle;
+                    time_data[readCounter+1] = esp_timer_get_time()/1000;
                     readCounter++;
                 }
             }
 
-            //boolean isForwards = sensor.getOrientation() < 0.2;
+            //boolean isForwards = sensor.getAngle() < 0.2;
             //boolean isIR = !digitalRead(IR_PIN);
             // for (int i = 1; i < 11; i++)
             //     LED.setLED(i,  RGBL(0, isForwards ? 255 : 0, isIR ? 127 : 0,16));

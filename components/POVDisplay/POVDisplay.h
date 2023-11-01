@@ -34,6 +34,8 @@ class POVDisplay {
 
         void setPixel(uint16_t x, uint16_t y, uint32_t color);
 
+        void setPixel(uint16_t x, uint16_t y, uint32_t color, uint8_t brightness);
+
         void drawChar(uint16_t x, uint16_t y, char character, uint32_t color);
 
         void drawSprite(uint16_t x, uint16_t y, uint16_t spriteID);

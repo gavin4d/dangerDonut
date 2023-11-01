@@ -15,9 +15,10 @@ class orientator {
         ~orientator();
 
         void setup(uint8_t pin, ADXL375 accel);
-        boolean updatePeriod();
-        boolean updateOrientation();
-        double getOrientation();
+        void update(double&, double&);
+        //boolean updatePeriod();
+        //boolean updateOrientation();
+        double getAngle();
         void setCallback(void(* callback)());
         void setOffset(double offset);
         double getOffset();
@@ -30,17 +31,15 @@ class orientator {
         static std::bitset<IR_DATA_SIZE> IRData; // 500 bit array for incomming IR data
         static uint8_t pin;
         ADXL375 accel;
-        double accelPos = 0.03;
+        double accelPos = 0.0297;
         double offset = 0;
         static double rotationPeriod; // milliseconds
-        uint64_t orientationTimeStamp = 0; // time stamp of last zero crossing
+        double angularVelocity; // radians per second
+        uint64_t zeroCrossingTime = 0; // time stamp of last zero crossing
         uint64_t lastIROrientation = 0;
         double lastRotationPeriod = 0;
 
-        kalmanFilter IRFilterO;
-        kalmanFilter IRFilterP;
-        kalmanFilter AccFilterO;
-        kalmanFilter AccFilterP;
+        kalmanFilter filter;
         esp_timer_handle_t update_timer;
         esp_timer_handle_t initTimer;
         static esp_timer_handle_t zeroHeadingTimer;
@@ -48,10 +47,11 @@ class orientator {
         static void initCallback(void *args);
         static void zeroHeadingCallback(void *args);
         static void checkIRCallback(void *args);
-        boolean getIRPeriod(double* rotationPeriod);
-        boolean getAccelPeriod(double* rotationPeriod);
-        boolean getIROrientation(uint64_t* IROrientation);
-        boolean getAccelOrientation(uint64_t* AccelOrientation);
+        boolean getIRVelocity(double& rotationPeriod);
+        boolean getAccelVelocity(double& rotationPeriod);
+        boolean getIROrientation(uint64_t& IROrientation);
+        boolean getAccelOrientation(uint64_t& AccelOrientation);
+        double getAngle(uint64_t period);
 
 };
 #endif

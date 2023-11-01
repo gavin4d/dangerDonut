@@ -13,6 +13,16 @@ HD107S::~HD107S() {
 	free(buffer);
 }
 
+// HD107S& HD107S::operator=(const HD107S &inputHD107S) {
+// 	if (this != &inputHD107S) {
+//         free(buffer);
+//         size_t size = (inputHD107S.numLEDs + 2) * sizeof(hd107s_color_t);
+//         buffer = (hd107s_color_t*)heap_caps_malloc(size, MALLOC_CAP_DMA | MALLOC_CAP_32BIT);
+//         std::copy(&inputHD107S.buffer[0], &inputHD107S.buffer[0]+size, &buffer[0]);
+// 	}
+// 	return *this;
+// }
+
 void HD107S::setup(hd107s_config_t config) {
 	HD107S::numLEDs = config.numLEDs;
 	HD107S::DMAChannel = config.DMAChannel;

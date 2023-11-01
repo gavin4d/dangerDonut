@@ -47,6 +47,10 @@ void POVDisplay::setPixel(uint16_t x, uint16_t y, uint32_t color) {
     frameData.setPixel(x, y, color);
 }
 
+void POVDisplay::setPixel(uint16_t x, uint16_t y, uint32_t color, uint8_t brightness) {
+    frameData.setPixel(x, y, color);
+}
+
 void POVDisplay::drawChar(uint16_t x, uint16_t y, char character, uint32_t color) {
 }
 
