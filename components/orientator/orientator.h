@@ -19,7 +19,9 @@ class orientator {
         //boolean updatePeriod();
         //boolean updateOrientation();
         double getAngle();
-        void setCallback(void(* callback)());
+        void setZeroCrossCallback(void(* callback)());
+        void stopZeroCrossCallback();
+        void setOnStopCallback(void(* callback)());
         void setOffset(double offset);
         double getOffset();
         void setAccelPos(double accelPos);
@@ -31,7 +33,7 @@ class orientator {
         static std::bitset<IR_DATA_SIZE> IRData; // 500 bit array for incomming IR data
         static uint8_t pin;
         ADXL375 accel;
-        double accelPos = 0.0297;
+        double accelPos = 0.03;
         double offset = 0;
         static double rotationPeriod; // milliseconds
         double angularVelocity; // radians per second
@@ -43,14 +45,14 @@ class orientator {
         esp_timer_handle_t update_timer;
         esp_timer_handle_t initTimer;
         static esp_timer_handle_t zeroHeadingTimer;
-        static void (* userCallback)();
+        static void (* zeroCrossCallback)();
+        static void (* onStopCallback)();
         static void initCallback(void *args);
         static void zeroHeadingCallback(void *args);
         static void checkIRCallback(void *args);
         boolean getIRVelocity(double& rotationPeriod);
         boolean getAccelVelocity(double& rotationPeriod);
         boolean getIROrientation(uint64_t& IROrientation);
-        boolean getAccelOrientation(uint64_t& AccelOrientation);
         double getAngle(uint64_t period);
 
 };

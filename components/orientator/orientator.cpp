@@ -10,7 +10,8 @@
 uint8_t orientator::pin;
 std::bitset<500> orientator::IRData;
 esp_timer_handle_t orientator::zeroHeadingTimer;
-void (* orientator::userCallback)() = nullptr;
+void (* orientator::zeroCrossCallback)() = nullptr;
+void (* orientator::onStopCallback)() = nullptr;
 double orientator::rotationPeriod = 0;
 
 orientator::orientator() {
@@ -25,11 +26,19 @@ void orientator::initCallback(void *args) {
 }
 
 void orientator::zeroHeadingCallback(void *args) {
-    if (userCallback != nullptr) userCallback();
+    if (zeroCrossCallback != nullptr) zeroCrossCallback();
 }
 
-void orientator::setCallback(void (* callback)()) {
-    userCallback = callback;
+void orientator::stopZeroCrossCallback() {
+    esp_timer_stop(zeroHeadingTimer);
+}
+
+void orientator::setZeroCrossCallback(void (* callback)()) {
+    zeroCrossCallback = callback;
+}
+
+void orientator::setOnStopCallback(void (* callback)()) {
+    onStopCallback = callback;
 }
 
 bool orientator::getIRData(int i) {
@@ -131,48 +140,16 @@ void orientator::update(double& angle, double& velocity) {
     esp_timer_stop(zeroHeadingTimer);
     if (angularVelocity > 10) {
         rotationPeriod = (double)(1000*2*PI)/angularVelocity;
-        int64_t startDelay = rotationPeriod*RESOLUTION+zeroCrossingTime-esp_timer_get_time();
+        int64_t startDelay = rotationPeriod*RESOLUTION+zeroCrossingTime-esp_timer_get_time() - (int)(offset*rotationPeriod*RESOLUTION);
         while (startDelay < 0) startDelay += abs(rotationPeriod*RESOLUTION);
         esp_timer_start_once(initTimer, startDelay);
     } else {
+        if (onStopCallback != nullptr)
+            onStopCallback();
         rotationPeriod = 0;
     }
 
 }
-
-// boolean orientator::updateOrientation() {
-//     if (rotationPeriod == 0) return false;
-//     uint64_t IROrientation = 0, AccelOrientation = 0;
-
-//     bool useIR = getIROrientation(IROrientation);
-//     bool useAccel = getAccelOrientation(AccelOrientation);
-
-//     if (!useAccel && !useIR) { // neither sensor gave a reading, uh oh!
-//         esp_timer_stop(zeroHeadingTimer);
-//         return false;
-//     }
-//     //ESP_LOGI("orientation", "%lld, mod %lld", AccelOrientation, AccelOrientation % (uint32_t)(rotationPeriod*RESOLUTION));
-//     if (useAccel && useIR) {
-//         double IRWeight = 1; //IRFilterO.getWeight((IROrientation-lastIROrientation) % (uint32_t)(rotationPeriod*RESOLUTION));
-//         double AccelWeight = 1; //AccFilterO.getWeight((rotationPeriod-lastRotationPeriod)*RESOLUTION);
-//         //ESP_LOGI("weight", "%lf", AccelWeight);
-//         uint64_t IRZeroDelay = (esp_timer_get_time() - IROrientation) % (uint32_t)(rotationPeriod*RESOLUTION);
-//         uint64_t AccelZeroDelay = (esp_timer_get_time() - AccelOrientation) % (uint32_t)(rotationPeriod*RESOLUTION);
-//         zeroCrossingTime = esp_timer_get_time() - (uint64_t)((IRZeroDelay*IRWeight + AccelZeroDelay*AccelWeight)/(IRWeight+AccelWeight));
-//     } else if (useIR) {
-//         zeroCrossingTime = IROrientation;
-//     } else {
-//         zeroCrossingTime = AccelOrientation;
-//     }
-
-//     esp_timer_stop(zeroHeadingTimer);
-//     int64_t startDelay = rotationPeriod*RESOLUTION+zeroCrossingTime-esp_timer_get_time();
-//     while (startDelay < 0) startDelay += (rotationPeriod*RESOLUTION);
-//     esp_timer_start_once(initTimer, startDelay);
-//     //esp_timer_start_once(initTimer, rotationPeriod*RESOLUTION+zeroCrossingTime-esp_timer_get_time());
-
-//     return true;
-// }
 
 boolean orientator::getAccelVelocity(double& accelVelocity) {
     int16_t x;
@@ -248,16 +225,4 @@ boolean orientator::getIROrientation(uint64_t& IROrientation) { // convolution
     }
     IROrientation = esp_timer_get_time() - peak*RESOLUTION;
     return (double)(maxOutput - minOutput) > (MIN_IR_DETECTION_PERCENT*rotationPeriod/4);
-}
-
-// estimate orientation using rotational period
-boolean orientator::getAccelOrientation(uint64_t& AccelOrientation) {
-    if (rotationPeriod == 0) return false;
-    long catchUpRotations = (esp_timer_get_time() - zeroCrossingTime)/((int)(rotationPeriod*RESOLUTION));
-    AccelOrientation = zeroCrossingTime + catchUpRotations*(rotationPeriod*RESOLUTION);
-    //ESP_LOGI("orientation", "catchup: %ld, diff: %lld", catchUpRotations, esp_timer_get_time() - zeroCrossingTime);
-    // while (esp_timer_get_time() - *AccelOrientation > rotationPeriod*RESOLUTION) {
-    //     *AccelOrientation += rotationPeriod*RESOLUTION;
-    // }
-    return true;
 }

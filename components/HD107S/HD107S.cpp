@@ -55,7 +55,7 @@ void HD107S::setup(hd107s_config_t config) {
 }
 
 void HD107S::setLED(uint16_t index, hd107s_color_t color) {
-	buffer[index+1] = SPI_SWAP_DATA_TX(color, 32);
+	buffer[index] = SPI_SWAP_DATA_TX(color, 32);
 }
 
 void HD107S::update() {

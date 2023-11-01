@@ -43,12 +43,19 @@ void POVDisplay::makeFrame(double rotationPeriod, int direction) {
     esp_timer_start_periodic(writeLEDTimer, (uint64_t)(rotationPeriod*1000/FRAME_WIDTH));
 }
 
+void POVDisplay::makeLEDStrip() {
+    for (int i = 0; i < FRAME_HEIGHT; i++) {
+        LED.setLED(FRAME_HEIGHT-i, HD107S_INTL(lineData[i], brightness));
+    }
+    LED.update();
+}
+
 void POVDisplay::setPixel(uint16_t x, uint16_t y, uint32_t color) {
     frameData.setPixel(x, y, color);
 }
 
-void POVDisplay::setPixel(uint16_t x, uint16_t y, uint32_t color, uint8_t brightness) {
-    frameData.setPixel(x, y, color);
+void POVDisplay::setLinePixel(uint16_t y, uint32_t color) {
+    lineData[y] = color;
 }
 
 void POVDisplay::drawChar(uint16_t x, uint16_t y, char character, uint32_t color) {
@@ -58,6 +65,15 @@ void POVDisplay::drawSprite(uint16_t x, uint16_t y, uint16_t spriteID) {
     frameData.drawSprite(x, y, spriteSizes[spriteID][0], spriteSizes[spriteID][1], spriteArray[spriteID]);
 }
 
+void POVDisplay::setColumn(uint16_t column) {
+    columnPointer = column;
+}
+
 void POVDisplay::clear() {
     frameData.clearFrame();
+}
+
+void POVDisplay::clearLine() {
+    for (int i = 0; i < FRAME_HEIGHT; i++)
+        lineData[i] = 0xff000000;
 }

@@ -32,9 +32,11 @@ class POVDisplay {
          */
         void makeFrame(double rotationPeriod, int direction);
 
+        void makeLEDStrip();
+
         void setPixel(uint16_t x, uint16_t y, uint32_t color);
 
-        void setPixel(uint16_t x, uint16_t y, uint32_t color, uint8_t brightness);
+        void setLinePixel(uint16_t y, uint32_t color);
 
         void drawChar(uint16_t x, uint16_t y, char character, uint32_t color);
 
@@ -43,6 +45,10 @@ class POVDisplay {
         void drawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint32_t color);
 
         void clear();
+        
+        void clearLine();
+
+        void setColumn(uint16_t column);
 
     private:
         static uint8_t brightness;
@@ -51,6 +57,7 @@ class POVDisplay {
         static frame frameData;
         static esp_timer_handle_t writeLEDTimer;
         static int direction;
+        uint32_t lineData[FRAME_HEIGHT];
 
         static void writeLEDColumn(void * args);
 
