@@ -36,17 +36,17 @@ class POVDisplay {
 
         void setPixel(uint16_t x, uint16_t y, uint32_t color);
 
-        void setLinePixel(uint16_t y, uint32_t color);
+        void setStripPixel(int16_t y, uint32_t color);
 
         void drawChar(uint16_t x, uint16_t y, char character, uint32_t color);
 
-        void drawSprite(uint16_t x, uint16_t y, uint16_t spriteID);
+        void drawSprite(int16_t x, uint16_t y, uint16_t spriteID);
 
         void drawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint32_t color);
 
         void clear();
-        
-        void clearLine();
+
+        void clearStrip();
 
         void setColumn(uint16_t column);
 

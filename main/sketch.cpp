@@ -11,6 +11,7 @@
 #include <ADXL375.h>
 #include <uni_log.h>
 #include <POVDisplay.h>
+#include <Preferences.h>
 
 #include "orientator.h"
 
@@ -41,9 +42,9 @@
 #define DRIVE_SENSITIVITY 0.1
 #define TURN_SENSITIVITY 0.015
 #define MELTY_SENSITIVITY 0.25
-#define MELTY_TURN_SENSITIVITY 1
+#define MELTY_TURN_SENSITIVITY 6
 
-#define NUM_DECORATIONS 2
+#define NUM_DECORATIONS 3
 //
 // README FIRST, README FIRST, README FIRST
 //
@@ -73,8 +74,10 @@ double time_data[1001];
 int readCounter = 0;
 int cooldown = 0;
 int8_t decor = 0;
+float animation = 0;
 float disconnectedLEDPos = 0;
 int64_t loopStart = 0;
+Preferences preferences;
 ADXL375 ADXL;
 orientator sensor;
 HD107S LED;
@@ -86,9 +89,9 @@ void onConnectedGamepad(GamepadPtr gp) {
     if (myGamepad == nullptr) {
         Console.printf("CALLBACK: Gamepad is connected\n");
 
-        display.clearLine();
+        display.clearStrip();
         for (int i = 0; i < 11; i++)
-            display.setLinePixel(i, 0xff00ff00);
+            display.setStripPixel(i, 0xff00ff00);
         display.makeLEDStrip();
 
         // Additionally, you can get certain gamepad properties like:
@@ -148,14 +151,29 @@ void zeroHeadingCallback() {
     case 1:
         display.drawSprite(0,0,11);
         break;
+    case 2:
+        if (((int)(animation + 2) % 12) < 4) display.drawSprite(20, 4, 17-((int)(animation + 2) % 12));
+        if (((int)(animation + 8) % 12) < 4) display.drawSprite(64, 0, 17-((int)(animation + 8) % 12));
+        if (((int)(animation + 4) % 12) < 4) display.drawSprite(47, 4, 17-((int)(animation + 4) % 12));
+        if (((int)(animation + 6) % 12) < 4) display.drawSprite(0, 2, 17-((int)(animation + 6) % 12));
+        if(((int)animation % 8) >= 4) {
+            display.drawSprite(animation,0,12);
+        } else {
+            display.drawSprite(animation,0,13);
+        }
+        animation -= period/84;
+        if (animation < 0) animation = 83;
+        break;
     default:
         display.drawSprite(40,0,10);
         break;
     }
 
     for (int i = 2; i < 84; i++) {
-        if (!sensor.getIRData(i*period/84))
+        if (!sensor.getIRData(i*period/84)) {
+            display.setPixel(i, 9, 0xff00ff00);
             display.setPixel(i, 10, 0xff00ff00);
+        }
     }
     display.setPixel(0,10, 0xff0000ff);
     display.setPixel(1,10, 0xff0000ff);
@@ -167,14 +185,15 @@ void zeroHeadingCallback() {
 }
 
 void onStopCallback() {
-    display.clearLine();
+    display.clearStrip();
     for (int i = 0; i < 11; i++)
-        display.setLinePixel(i, 0xff00ff00);
+        display.setStripPixel(i, 0xff00ff00);
     display.makeLEDStrip();
 } 
 
 // Arduino setup function. Runs in CPU 1
 void setup() {
+
 
     hd107s_config_t LED_config;
     LED_config.dataPin = LED_DATA_PIN;
@@ -213,6 +232,9 @@ void setup() {
     sensor.setup(IR_PIN, ADXL);
     sensor.setZeroCrossCallback(&zeroHeadingCallback);
     sensor.setOnStopCallback(&onStopCallback);
+
+    preferences.begin("config");
+    sensor.setAccelPos(preferences.getDouble("AccelPos"));
 
 }
 
@@ -260,14 +282,14 @@ void loop() {
             } else { // melty mode
                 float hypot = hypotf(x,y);
                 if (hypot < STICK_DEAD_ZONE) hypot = 0;
-                const float theta = atan2f(y,x) + offset*2*PI;
+                const float theta = atan2f(y,x) + spinDirection*offset*2*PI;
                 const float meltyPower = MELTY_SENSITIVITY*hypot*sin(spinDirection*sensor.getAngle() + theta);
                 left_power = spin_power + meltyPower;
                 right_power = spin_power - meltyPower;
 
                 if (abs(r) > STICK_DEAD_ZONE) {
                     double turnAmount = MELTY_TURN_SENSITIVITY*r*deltaTime;
-                    sensor.setOffset(sensor.getOffset() - spinDirection*turnAmount);
+                    sensor.adjustAngle(-spinDirection*turnAmount);
                 }
             }
 
@@ -347,7 +369,8 @@ void loop() {
             if (myGamepad->up()) {
                 if (!buttons[3]) {
                     buttons[3] = true;
-                    sensor.setAccelPos(sensor.getAccelPos() + 0.0001);
+                    sensor.setAccelPos(sensor.getAccelPos() + 0.00005);
+                    preferences.putDouble("AccelPos",sensor.getAccelPos());
                     Console.printf("AccelPos: %f\n", sensor.getAccelPos());
                 }
             } else {
@@ -357,7 +380,8 @@ void loop() {
             if (myGamepad->down()) {
                 if (!buttons[4]) {
                     buttons[4] = true;
-                    sensor.setAccelPos(sensor.getAccelPos() - 0.0001);
+                    sensor.setAccelPos(sensor.getAccelPos() - 0.00005);
+                    preferences.putDouble("AccelPos",sensor.getAccelPos());
                     Console.printf("AccelPos: %f\n", sensor.getAccelPos());
                 }
             } else {
@@ -377,8 +401,8 @@ void loop() {
         }
     } else {
         sensor.stopZeroCrossCallback();
-        display.clearLine();
-        display.setLinePixel(floor(abs(disconnectedLEDPos-9)), 0xffff0000);
+        display.clearStrip();
+        display.setStripPixel(floor(abs(disconnectedLEDPos-9)), 0xffff0000);
         display.makeLEDStrip();
         disconnectedLEDPos += 0.03;
         if (disconnectedLEDPos >= 19)

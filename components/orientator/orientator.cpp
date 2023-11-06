@@ -57,6 +57,10 @@ void orientator::setAccelPos(double accelPos) {
     orientator::accelPos = 0.02*((accelPos-0.02)/0.02-floor((accelPos-0.02)/0.02))+0.02;
 }
 
+void orientator::adjustAngle(double angle) {
+    filter.adjustAngle(angle);
+}
+
 double orientator::getAccelPos() {
     return accelPos;
 }
@@ -116,7 +120,7 @@ void orientator::setup(uint8_t pin, ADXL375 accel) {
 }
 
 void orientator::update(double& angle, double& velocity) {
-    float velocityVariance = 0.001;
+    float velocityVariance = 0.0008;
     float angleVariance = 0.0001;
 
     double measuredVelocity = 0;

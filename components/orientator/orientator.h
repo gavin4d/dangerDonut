@@ -23,6 +23,7 @@ class orientator {
         void stopZeroCrossCallback();
         void setOnStopCallback(void(* callback)());
         void setOffset(double offset);
+        void adjustAngle(double angle);
         double getOffset();
         void setAccelPos(double accelPos);
         double getAccelPos();
@@ -33,7 +34,7 @@ class orientator {
         static std::bitset<IR_DATA_SIZE> IRData; // 500 bit array for incomming IR data
         static uint8_t pin;
         ADXL375 accel;
-        double accelPos = 0.03;
+        double accelPos = 0.0301;
         double offset = 0;
         static double rotationPeriod; // milliseconds
         double angularVelocity; // radians per second

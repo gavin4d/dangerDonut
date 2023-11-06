@@ -54,14 +54,14 @@ void POVDisplay::setPixel(uint16_t x, uint16_t y, uint32_t color) {
     frameData.setPixel(x, y, color);
 }
 
-void POVDisplay::setLinePixel(uint16_t y, uint32_t color) {
-    lineData[y] = color;
+void POVDisplay::setStripPixel(int16_t y, uint32_t color) {
+    lineData[y % FRAME_HEIGHT] = color;
 }
 
 void POVDisplay::drawChar(uint16_t x, uint16_t y, char character, uint32_t color) {
 }
 
-void POVDisplay::drawSprite(uint16_t x, uint16_t y, uint16_t spriteID) {
+void POVDisplay::drawSprite(int16_t x, uint16_t y, uint16_t spriteID) {
     frameData.drawSprite(x, y, spriteSizes[spriteID][0], spriteSizes[spriteID][1], spriteArray[spriteID]);
 }
 
@@ -73,7 +73,7 @@ void POVDisplay::clear() {
     frameData.clearFrame();
 }
 
-void POVDisplay::clearLine() {
+void POVDisplay::clearStrip() {
     for (int i = 0; i < FRAME_HEIGHT; i++)
         lineData[i] = 0xff000000;
 }

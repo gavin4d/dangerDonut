@@ -1,22 +1,20 @@
 #include "frame.h"
 #include <stack>
+#include <cstring>
 
-void frame::setPixel(uint8_t x, uint8_t y, uint32_t color) {
-    data[x][y] = color;
+void frame::setPixel(int16_t x, uint8_t y, uint32_t color) {
+    if (y < FRAME_HEIGHT) data[x % FRAME_WIDTH][y] = color;
 }
 
-uint32_t frame::getPixel(int8_t x, uint8_t y) {
-    if (x < 0) x = x + FRAME_WIDTH;
-    return outputBuffer[x][y];
+uint32_t frame::getPixel(int16_t x, uint8_t y) {
+    return outputBuffer[x % FRAME_WIDTH][y];
 }
 
 void frame::clearFrame() {
-    for (int i = 0; i < FRAME_WIDTH; i++) 
-        for (int j = 0; j < FRAME_WIDTH; j++)
-            setPixel(i, j, 0);
+    std::memset(data, 0, sizeof(data[0][0]) * FRAME_WIDTH * FRAME_HEIGHT);
 }
 
-void frame::drawSprite(uint8_t x, uint8_t y, uint16_t width, uint16_t height, const uint32_t * spriteData) {
+void frame::drawSprite(int16_t x, uint8_t y, uint16_t width, uint16_t height, const uint32_t * spriteData) {
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
             setPixel(x + i, y + j, ((spriteData[i+j*width] >> 24) > 0) ? spriteData[i+j*width] : 0);

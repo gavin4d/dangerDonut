@@ -8,10 +8,10 @@
 class frame {
 
     public:
-        void setPixel(uint8_t x, uint8_t y, uint32_t color);
-        uint32_t getPixel(int8_t x, uint8_t y);
+        void setPixel(int16_t x, uint8_t y, uint32_t color);
+        uint32_t getPixel(int16_t x, uint8_t y);
         void clearFrame();
-        void drawSprite(uint8_t x, uint8_t y, uint16_t width, uint16_t height, const uint32_t* spriteData);
+        void drawSprite(int16_t x, uint8_t y, uint16_t width, uint16_t height, const uint32_t* spriteData);
         void showFrame();
 
     private:
