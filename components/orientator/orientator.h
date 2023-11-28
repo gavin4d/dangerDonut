@@ -7,6 +7,12 @@
 #include <bitset>
 #include "kalmanFilter.h"
 #define IR_DATA_SIZE 500
+#define X_ZERO_OFFSET -10.47748815
+#define Y_ZERO_OFFSET -7.372037915
+#define VELOCITY_MAX 290
+
+#define NUM_ACCEL_POS 10
+#define ACCEL_POS_SPREAD (VELOCITY_MAX/(NUM_ACCEL_POS-1))
 
 class orientator {
 
@@ -15,7 +21,7 @@ class orientator {
         ~orientator();
 
         void setup(uint8_t pin, ADXL375 accel);
-        void update(double&, double&);
+        void update(double&, double&, double&, double&, double&);
         //boolean updatePeriod();
         //boolean updateOrientation();
         double getAngle();
@@ -24,17 +30,23 @@ class orientator {
         void setOnStopCallback(void(* callback)());
         void setOffset(double offset);
         void adjustAngle(double angle);
+        void adjustVelocity(double velocity);
+        void adjustAccel(double accel);
         double getOffset();
         void setAccelPos(double accelPos);
+        void setAccelPos(double accelPos, int index);
         double getAccelPos();
+        double getAccelPos(int index);
+        double getAproxAccelPos();
         double getPeriod();
+        double getVelocity();
         bool getIRData(int i);
 
     private:
         static std::bitset<IR_DATA_SIZE> IRData; // 500 bit array for incomming IR data
         static uint8_t pin;
         ADXL375 accel;
-        double accelPos = 0.0301;
+        double accelPos[NUM_ACCEL_POS] = {0.030};
         double offset = 0;
         static double rotationPeriod; // milliseconds
         double angularVelocity; // radians per second

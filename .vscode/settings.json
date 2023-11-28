@@ -6,6 +6,9 @@
         "uni_bt_le.h": "c",
         "btstack.h": "c",
         "chrono": "cpp",
-        "*.ipp": "c"
-    }
+        "*.ipp": "c",
+        "*.tcc": "cpp",
+        "*.inc": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

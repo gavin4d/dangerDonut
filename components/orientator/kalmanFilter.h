@@ -9,7 +9,7 @@
 #define ROT2LSB 65536
 #define LSB2ROT 1/65536
 
-#define PROCESS_NOISE 0.05 // trust the process
+#define PROCESS_NOISE 0.005 // trust the process
 
 // State of the system
 struct systemState{
@@ -55,6 +55,8 @@ class kalmanFilter {
         systemState stateUpdate();
 
         void adjustAngle(double angle);
+        void adjustVelocity(double velocity);
+        void adjustAccel(double accel);
 
     private:
         systemState estimateState;

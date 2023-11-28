@@ -246,9 +246,12 @@ bool ADXL375::setup(adxl375_spi_config_t config) {
         return false;
     }
 
-    writeRegister(ADXL3XX_REG_OFSX, (uint8_t)(-2));
-    writeRegister(ADXL3XX_REG_OFSY, (uint8_t)(-2));
+    writeRegister(ADXL3XX_REG_OFSX, (uint8_t)(0));
+    writeRegister(ADXL3XX_REG_OFSY, (uint8_t)(0));
     writeRegister(ADXL3XX_REG_OFSZ, (uint8_t)(6));
+
+    // Set measurement frequency
+    writeRegister(ADXL3XX_REG_BW_RATE, 0b00001100);
 
     // Enable measurements
     writeRegister(ADXL3XX_REG_POWER_CTL, 0x08);

@@ -22,6 +22,14 @@ void frame::drawSprite(int16_t x, uint8_t y, uint16_t width, uint16_t height, co
     }
 }
 
+void frame::drawMaskedSprite(int16_t x, uint8_t y, uint16_t width, uint16_t height, const uint32_t * spriteData, uint32_t maskColor) {
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            setPixel(x + i, y + j, ((spriteData[i+j*width] >> 24) > 0) ? maskColor : 0);
+        }
+    }
+}
+
 void frame::showFrame() {
     std::copy(&data[0][0], &data[0][0]+FRAME_HEIGHT*FRAME_WIDTH,&outputBuffer[0][0]);
 }

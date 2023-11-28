@@ -40,6 +40,8 @@ class POVDisplay {
 
         void drawChar(uint16_t x, uint16_t y, char character, uint32_t color);
 
+        void drawDigit(uint16_t x, uint16_t y, int digit, uint32_t color);
+
         void drawSprite(int16_t x, uint16_t y, uint16_t spriteID);
 
         void drawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint32_t color);

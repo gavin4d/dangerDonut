@@ -21,6 +21,7 @@ orientator::~orientator() {
 }
 
 void orientator::initCallback(void *args) {
+    if (rotationPeriod < 10 || rotationPeriod >= 500) return;
     zeroHeadingCallback(args);
     esp_timer_start_periodic(zeroHeadingTimer, rotationPeriod*RESOLUTION);
 }
@@ -54,19 +55,46 @@ double orientator::getOffset() {
 }
 
 void orientator::setAccelPos(double accelPos) {
-    orientator::accelPos = 0.02*((accelPos-0.02)/0.02-floor((accelPos-0.02)/0.02))+0.02;
+    orientator::accelPos[min((int)round(angularVelocity/ACCEL_POS_SPREAD),NUM_ACCEL_POS-1)] = accelPos;
+}
+
+void orientator::setAccelPos(double accelPos, int index) {
+    orientator::accelPos[index] = accelPos;
 }
 
 void orientator::adjustAngle(double angle) {
     filter.adjustAngle(angle);
 }
 
+void orientator::adjustVelocity(double velocity) {
+    filter.adjustVelocity(velocity);
+}
+
+void orientator::adjustAccel(double accel) {
+    filter.adjustAccel(accel);
+}
+
 double orientator::getAccelPos() {
-    return accelPos;
+    return accelPos[min((int)round(angularVelocity/ACCEL_POS_SPREAD), NUM_ACCEL_POS-1)];
+}
+
+double orientator::getAccelPos(int index) {
+    return accelPos[index];
+}
+
+double orientator::getAproxAccelPos() {
+    double adjustedVelocity = min(abs(angularVelocity)/ACCEL_POS_SPREAD, (double)NUM_ACCEL_POS-1);
+    double decmal = adjustedVelocity - floor(adjustedVelocity);
+
+    return accelPos[(int)adjustedVelocity] + decmal*(accelPos[min((int)adjustedVelocity+1, NUM_ACCEL_POS-1)] - accelPos[(int)adjustedVelocity]);
 }
 
 double orientator::getPeriod() {
     return rotationPeriod;
+}
+
+double orientator::getVelocity() {
+    return angularVelocity;
 }
 
 // returns radians since last zero crossing
@@ -119,18 +147,21 @@ void orientator::setup(uint8_t pin, ADXL375 accel) {
     filter.setInitState(initialState);
 }
 
-void orientator::update(double& angle, double& velocity) {
-    float velocityVariance = 0.0008;
+void orientator::update(double& angle, double& velocity, double& angleEstimate, double& velocityEstimate, double& accelEstimate) {
+    float velocityVariance = 0.003;
     float angleVariance = 0.0001;
 
     double measuredVelocity = 0;
-    if(!getAccelVelocity(measuredVelocity))
-        if(!getIRVelocity(measuredVelocity))
-            velocityVariance = 9999;
+    if(!getAccelVelocity(measuredVelocity)) {
+        if(!getIRVelocity(measuredVelocity)) {
+            velocityVariance = INFINITY;
+            measuredVelocity = 0;
+        }
+    }
 
     uint64_t measuredZeroCrossingTime = zeroCrossingTime;
     if(!getIROrientation(measuredZeroCrossingTime)) {
-        angleVariance = 9999;
+        angleVariance = INFINITY;
         measuredZeroCrossingTime = zeroCrossingTime;
     }
 
@@ -138,19 +169,24 @@ void orientator::update(double& angle, double& velocity) {
     velocity = measuredVelocity;
     filter.makeMeasurement(getAngle(measuredZeroCrossingTime), measuredVelocity, angleVariance, velocityVariance);
     systemState currentState = filter.stateUpdate();
-    angularVelocity = currentState.angularVelocity;
-    zeroCrossingTime = esp_timer_get_time() - (double)currentState.angle*LSB2ROT*rotationPeriod*RESOLUTION;
+    angleEstimate = currentState.angle*LSB2RAD;
+    velocityEstimate = currentState.angularVelocity;
+    accelEstimate = currentState.angularAcceleration;
+    angularVelocity = max(min(currentState.angularVelocity, 1.5*VELOCITY_MAX), (double)0);
+    //ESP_LOGI("Velocity", "measured: %lf, kalman: %lf", measuredVelocity, angularVelocity);
 
     esp_timer_stop(zeroHeadingTimer);
-    if (angularVelocity > 10) {
+    if (angularVelocity > 13) {
         rotationPeriod = (double)(1000*2*PI)/angularVelocity;
-        int64_t startDelay = rotationPeriod*RESOLUTION+zeroCrossingTime-esp_timer_get_time() - (int)(offset*rotationPeriod*RESOLUTION);
-        while (startDelay < 0) startDelay += abs(rotationPeriod*RESOLUTION);
+        zeroCrossingTime = esp_timer_get_time() - (double)currentState.angle*LSB2ROT*rotationPeriod*RESOLUTION;
+        int64_t startDelay = zeroCrossingTime - esp_timer_get_time() - (int)(offset*rotationPeriod*RESOLUTION);
+        if (startDelay < 0) startDelay = (startDelay % (int)(abs(rotationPeriod*RESOLUTION))) + (int)(abs(rotationPeriod*RESOLUTION));
         esp_timer_start_once(initTimer, startDelay);
     } else {
         if (onStopCallback != nullptr)
             onStopCallback();
         rotationPeriod = 0;
+        zeroCrossingTime = esp_timer_get_time();
     }
 
 }
@@ -159,8 +195,8 @@ boolean orientator::getAccelVelocity(double& accelVelocity) {
     int16_t x;
     int16_t y;
     if (!accel.getXY(&x, &y)) return false; // return false if read fails
-    double normAccel = hypot(x,y);
-    accelVelocity = sqrt(normAccel*LSB2MPS2_MULTIPLIER/accelPos); // radians per second
+    double normAccel = hypot(x+X_ZERO_OFFSET,y+Y_ZERO_OFFSET);
+    accelVelocity = sqrt(normAccel*LSB2MPS2_MULTIPLIER/getAccelPos()); // radians per second
 
     // report sensor error when maxing out the sensor
     if (normAccel*LSB2G_MULTIPLIER > 280) return false;
@@ -198,17 +234,18 @@ boolean orientator::getIRVelocity(double& IRVelocity) { // auto correlation
 }
 
 boolean orientator::getIROrientation(uint64_t& IROrientation) { // convolution
-    if (rotationPeriod == 0) return false;
+    if (rotationPeriod < 10 || rotationPeriod >= 500) return false;
+    int numIRBits = IRData.count();
+    if (numIRBits < MIN_IR_DETECTION_PERCENT*IR_DATA_SIZE || numIRBits > (1-MIN_IR_DETECTION_PERCENT)*IR_DATA_SIZE) return false;
     const uint16_t convolutionSize = rotationPeriod/2;
     uint16_t convolutionOut[(uint16_t)rotationPeriod];
     uint16_t peak = 0;
     uint32_t maxOutput = 0;
-    uint32_t minOutput = 0xFFFFFFFF;
 
-    for (uint16_t i = 0; i < min(500, (int)rotationPeriod); i++) { // first convolution using bitset
+    for (uint16_t i = 0; i < (int)rotationPeriod; i++) { // first convolution using bitset
         uint16_t sum = 0;
         for (uint16_t j = 0; j < convolutionSize; j++) {
-            sum += IRData[(j+i) % min(500,(int)rotationPeriod)];
+            sum += IRData[(j+i) % (int)rotationPeriod];
         }
         convolutionOut[i] = sum;
         //convolutionOut[i] = ((IRData << i | IRData >> (rotationPeriod-i)) << convolutionSize).count();
@@ -223,10 +260,8 @@ boolean orientator::getIROrientation(uint64_t& IROrientation) { // convolution
         if (sum > maxOutput) {
             maxOutput = sum;
             peak = i;
-        } else if (sum < minOutput) {
-            minOutput = sum;
         }
     }
     IROrientation = esp_timer_get_time() - peak*RESOLUTION;
-    return (double)(maxOutput - minOutput) > (MIN_IR_DETECTION_PERCENT*rotationPeriod/4);
+    return true;
 }

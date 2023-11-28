@@ -40,10 +40,11 @@ void POVDisplay::makeFrame(double rotationPeriod, int direction) {
     frameData.showFrame();
     esp_timer_stop(writeLEDTimer);
     columnPointer = 0;
-    esp_timer_start_periodic(writeLEDTimer, (uint64_t)(rotationPeriod*1000/FRAME_WIDTH));
+    esp_timer_start_periodic(writeLEDTimer, (uint64_t)((rotationPeriod*1000)/FRAME_WIDTH));
 }
 
 void POVDisplay::makeLEDStrip() {
+    esp_timer_stop(writeLEDTimer); // RIP, mysterious watchdog-defying bug (09/2023 - 11/22/2023)
     for (int i = 0; i < FRAME_HEIGHT; i++) {
         LED.setLED(FRAME_HEIGHT-i, HD107S_INTL(lineData[i], brightness));
     }
@@ -59,6 +60,10 @@ void POVDisplay::setStripPixel(int16_t y, uint32_t color) {
 }
 
 void POVDisplay::drawChar(uint16_t x, uint16_t y, char character, uint32_t color) {
+}
+
+void POVDisplay::drawDigit(uint16_t x, uint16_t y, int digit, uint32_t color) {
+    frameData.drawMaskedSprite(x, y, spriteSizes[digit % 10][0], spriteSizes[digit % 10][1], spriteArray[digit % 10], color);
 }
 
 void POVDisplay::drawSprite(int16_t x, uint16_t y, uint16_t spriteID) {

@@ -12,6 +12,8 @@
 #include <uni_log.h>
 #include <POVDisplay.h>
 #include <Preferences.h>
+#include <driver/adc.h>
+#include <QuickPID.h>
 
 #include "orientator.h"
 
@@ -38,39 +40,31 @@
 
 #define CONTROLLER_RESPONSE_TIMEOUT 3000000U
 #define STICK_DEAD_ZONE 0.1
-#define SPIN_POWER_THRESHOLD 0.02
+#define SPIN_THRESHOLD 10
 #define DRIVE_SENSITIVITY 0.1
 #define TURN_SENSITIVITY 0.015
 #define MELTY_SENSITIVITY 0.25
 #define MELTY_TURN_SENSITIVITY 6
+#define MAX_ACCELERATION 150
+#define JERK_COMPENSATION 400
 
 #define NUM_DECORATIONS 3
-//
-// README FIRST, README FIRST, README FIRST
-//
-// Bluepad32 has a built-in interactive console.
-// By default it is enabled (hey, this is a great feature!).
-// But it is incompatible with Arduino "Serial" class.
-//
-// Instead of using "Serial" you can use Bluepad32 "Console" class instead.
-// It is somewhat similar to Serial but not exactly the same.
-//
-// Should you want to still use "Serial", you have to disable the Bluepad32's console
-// from "sdkconfig.defaults" with:
-//    CONFIG_BLUEPAD32_USB_CONSOLE_ENABLE=n
 
 GamepadPtr myGamepad;
 DShotRMT esc_l, esc_r;
-bool buttons[8] = {false, false, false, false, false, false, false, false}; // B, <-, ->, ^, v, lb, rb, home
+bool buttons[9] = {false, false, false, false, false, false, false, false, false}; // B, <-, ->, ^, v, lb, rb, home, y
 bool controller_idle = false;
 int spinDirection = 1; // 1: clockwise, -1: withershin
+double spin_power = 0;
 double offset = 0.15;
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
 
 double velocity_data[1000];
+double velocity_e_data[1000];
 double angle_data[1000];
-double time_data[1001];
+double angle_e_data[1000];
+double accel_data[1001];
 int readCounter = 0;
 int cooldown = 0;
 int8_t decor = 0;
@@ -82,6 +76,15 @@ ADXL375 ADXL;
 orientator sensor;
 HD107S LED;
 POVDisplay display;
+float pidInput, pidOutput, pidSetPoint;
+float Kp = 0.004, Ki = 0.005, Kd = 0.0001; 
+QuickPID pid(&pidInput, &pidOutput, &pidSetPoint);
+
+float getBattVoltage() {
+    int voltageReading = 0;
+    adc2_get_raw(ADC2_CHANNEL_1, ADC_WIDTH_12Bit, &voltageReading);
+    return (float)voltageReading * 1.90 / 4095 * 4.4;
+}
 
 // This callback gets called any time a new gamepad is connected.
 void onConnectedGamepad(GamepadPtr gp) {
@@ -94,8 +97,6 @@ void onConnectedGamepad(GamepadPtr gp) {
             display.setStripPixel(i, 0xff00ff00);
         display.makeLEDStrip();
 
-        // Additionally, you can get certain gamepad properties like:
-        // Model, VID, PID, BTAddr, flags, etc.
         GamepadProperties properties = gp->getProperties();
         Console.printf("Gamepad model: %s, VID=0x%04x, PID=0x%04x\n", gp->getModelName(), properties.vendor_id,
                         properties.product_id);
@@ -126,27 +127,30 @@ void onDisconnectedGamepad(GamepadPtr gp) {
 void setMotorPower(float left_power, float right_power) {
     //Console.printf("Motor Power: left: %02f, right: %02f\n", left_power, right_power);
     if (left_power < 0) {
-        esc_l.sendThrottle(-left_power*1000 + 48);
+        esc_l.sendThrottle(-left_power*999 + 48);
     } else {
-        esc_l.sendThrottle(left_power*1000 + 1048);
+        esc_l.sendThrottle(left_power*999 + 1048);
     }
     if (right_power < 0) {
-        esc_r.sendThrottle(-right_power*1000 + 48);
+        esc_r.sendThrottle(-right_power*999 + 48);
     } else {
-        esc_r.sendThrottle(right_power*1000 + 1048);
+        esc_r.sendThrottle(right_power*999 + 1048);
     }
 }
 
 void zeroHeadingCallback() {
-    double period =  sensor.getPeriod();
-    int RPM = 60000/period;
+    double period = sensor.getPeriod();
+    if (period < 10 || period >= 500) return;
+    int RPM = 60000/period; // min((int)round(sensor.getVelocity()/ACCEL_POS_SPREAD), NUM_ACCEL_POS-1);
     display.clear();
+    uint32_t color = 0xFFFFFFFF;
+    if (getBattVoltage() < 6.5) color = 0xFFFF2222;
     switch (decor) {
     case 0:
-        if (RPM >= 1000) display.drawSprite(28, 0, RPM/1000 % 10);
-        if (RPM >= 100) display.drawSprite(35, 0, RPM/100 % 10);
-        if (RPM >= 10) display.drawSprite(43, 0, RPM/10 % 10);
-        display.drawSprite(50, 0, RPM % 10);
+        if (RPM >= 1000) display.drawDigit(28, 0, RPM/1000 % 10, color);
+        if (RPM >= 100) display.drawDigit(35, 0, RPM/100 % 10, color);
+        if (RPM >= 10) display.drawDigit(43, 0, RPM/10 % 10, color);
+        display.drawDigit(50, 0, RPM % 10, color);
         break;
     case 1:
         display.drawSprite(0,0,11);
@@ -189,11 +193,18 @@ void onStopCallback() {
     for (int i = 0; i < 11; i++)
         display.setStripPixel(i, 0xff00ff00);
     display.makeLEDStrip();
-} 
+}
+
+float velocityFollow(float current, float target, float deltaTime) {
+    float step = deltaTime*MAX_ACCELERATION;
+    if (abs(target - current) >= step) {
+        return current + copysignf(step, target-current);
+    }
+    return target;
+}
 
 // Arduino setup function. Runs in CPU 1
 void setup() {
-
 
     hd107s_config_t LED_config;
     LED_config.dataPin = LED_DATA_PIN;
@@ -204,7 +215,6 @@ void setup() {
 
     display = POVDisplay(LED_config);
     display.setBrightness(64);
-    //display.drawSprite(40,0,10);
 
     adxl375_spi_config_t adxl_config;
     adxl_config.clockPin = ADXL_CLOCK_PIN;
@@ -234,16 +244,30 @@ void setup() {
     sensor.setOnStopCallback(&onStopCallback);
 
     preferences.begin("config");
-    sensor.setAccelPos(preferences.getDouble("AccelPos"));
+    char readLocation[10] = "AccelPos ";
+    Console.println("Accel config:");
+    for (int i = 0; i < NUM_ACCEL_POS; i++) {
+        readLocation[8] = i+'0';
+        if (isnan(preferences.getDouble(readLocation)))
+            sensor.setAccelPos(0.03, i);
+        else
+            sensor.setAccelPos(preferences.getDouble(readLocation), i);
+        Console.print(readLocation);
+        Console.printf(": %f\n", preferences.getDouble(readLocation));
+    }
 
+    adc2_config_channel_atten(ADC2_CHANNEL_1, ADC_ATTEN_6db);
+
+    pidSetPoint = 0;
+    pid.SetTunings(Kp, Ki, Kd);
+    pid.SetMode(pid.Control::automatic);
+    pid.SetOutputLimits(-1,1);
+    pid.SetSampleTimeUs(4000);
 }
 
 // Arduino loop function. Runs in CPU 1
 void loop() {
-    // This call fetches all the gamepad info from the NINA (ESP32) module.
-    // Just call this function in your main loop.
-    // The gamepads pointer (the ones received in the callbacks) gets updated
-    // automatically.
+
     double deltaTime = ((double)(esp_timer_get_time() - loopStart))/1000000;
     loopStart = esp_timer_get_time();
     BP32.update();
@@ -254,12 +278,13 @@ void loop() {
 
         double logVelocity = 0;
         double logAngle = 0;
-        if (cooldown <= 0) {
-            sensor.update(logAngle, logVelocity);
-            cooldown = 4;
-        } else {
-            cooldown--;
-        }
+        double logAngle_e = 0;
+        double logVelocity_e = 0;
+        double logAccel_e = 0;
+        sensor.update(logAngle, logVelocity, logAngle_e, logVelocity_e, logAccel_e);
+        pidInput = spinDirection * sensor.getVelocity();
+        double previousPower = pidOutput;
+        pid.Compute();
 
         if (!controller_idle) {
 
@@ -268,9 +293,11 @@ void loop() {
             float y = -((float)myGamepad->axisY())/512;
             float x = ((float)myGamepad->axisX())/512;
             float r = ((float)myGamepad->axisRX())/512;
-            float spin_power = ((float)(myGamepad->throttle() - myGamepad->brake()))/1024;
-            spinDirection = copysignf(1.0, spin_power);
-            if (abs(spin_power) < SPIN_POWER_THRESHOLD) { // run in tank drive if not spinning
+
+            pidSetPoint = velocityFollow(pidSetPoint, VELOCITY_MAX*(float)(myGamepad->throttle() - myGamepad->brake())/1024, deltaTime);
+
+            spinDirection = copysignf(1.0, pidSetPoint);
+            if (abs(pidSetPoint) < SPIN_THRESHOLD) { // run in tank drive if not spinning
                 if (abs(y) > STICK_DEAD_ZONE) {
                     left_power += y * DRIVE_SENSITIVITY;
                     right_power -= y * DRIVE_SENSITIVITY;
@@ -280,12 +307,14 @@ void loop() {
                     right_power += r * TURN_SENSITIVITY;
                 }
             } else { // melty mode
+                sensor.adjustAccel((pidOutput - previousPower)*JERK_COMPENSATION);
+                //ESP_LOGI("pid", "setPoint: %f, input: %f, output: %f", pidSetPoint, pidInput, pidOutput);
                 float hypot = hypotf(x,y);
                 if (hypot < STICK_DEAD_ZONE) hypot = 0;
                 const float theta = atan2f(y,x) + spinDirection*offset*2*PI;
                 const float meltyPower = MELTY_SENSITIVITY*hypot*sin(spinDirection*sensor.getAngle() + theta);
-                left_power = spin_power + meltyPower;
-                right_power = spin_power - meltyPower;
+                left_power = pidOutput + meltyPower;
+                right_power = pidOutput - meltyPower;
 
                 if (abs(r) > STICK_DEAD_ZONE) {
                     double turnAmount = MELTY_TURN_SENSITIVITY*r*deltaTime;
@@ -298,14 +327,19 @@ void loop() {
                 left_power /= max_power;
                 right_power /= max_power;
             }
+
+            if (myGamepad->x()) { // self right using wheel's inertia
+                left_power = 1;
+                right_power = -1;
+            }
+
             setMotorPower(left_power, right_power);
 
             if (myGamepad->b()) {
                 if (!buttons[0]) {
                     buttons[0] = true;
-                    //sensor.fillArray(spin_data);
                     for (int i = 0; i < 1000; i++) {
-                        Console.printf("%lf	%lf	%lf	\n", angle_data[i], velocity_data[i], time_data[i+1]-time_data[i]);
+                        Console.printf("%lf	%lf	%lf	%lf	%lf 	\n", angle_data[i], velocity_data[i], angle_e_data[i], velocity_e_data[i], accel_data[i]);
                     }
                     Console.print("\n");
                 }
@@ -314,10 +348,13 @@ void loop() {
             }
 
             if (myGamepad->a()) {
-                if (readCounter < 1000 && logVelocity > 0.1) {
+                if (readCounter >= 1000) readCounter = 0;
+                if (/*readCounter < 1000 && */logVelocity > 0.1) {
                     velocity_data[readCounter] = logVelocity;
+                    velocity_e_data[readCounter] = logVelocity_e;
                     angle_data[readCounter] = logAngle;
-                    time_data[readCounter+1] = esp_timer_get_time()/1000;
+                    angle_e_data[readCounter] = logAngle_e;
+                    accel_data[readCounter] = logAccel_e;
                     readCounter++;
                 }
             }
@@ -347,7 +384,6 @@ void loop() {
             if (myGamepad->left()) {
                 if (!buttons[1]) {
                     buttons[1] = true;
-                    //sensor.setOffset(sensor.getOffset() + 0.05);
                     offset = (offset + 0.025)-floor(offset + 0.025);
                     Console.printf("offset: %f\n", sensor.getOffset());
                 }
@@ -358,7 +394,6 @@ void loop() {
             if (myGamepad->right()) {
                 if (!buttons[2]) {
                     buttons[2] = true;
-                    //sensor.setOffset(sensor.getOffset() - 0.05);
                     offset = (offset - 0.025)-floor(offset - 0.025);
                     Console.printf("offset: %f\n", sensor.getOffset());
                 }
@@ -370,7 +405,6 @@ void loop() {
                 if (!buttons[3]) {
                     buttons[3] = true;
                     sensor.setAccelPos(sensor.getAccelPos() + 0.00005);
-                    preferences.putDouble("AccelPos",sensor.getAccelPos());
                     Console.printf("AccelPos: %f\n", sensor.getAccelPos());
                 }
             } else {
@@ -381,7 +415,6 @@ void loop() {
                 if (!buttons[4]) {
                     buttons[4] = true;
                     sensor.setAccelPos(sensor.getAccelPos() - 0.00005);
-                    preferences.putDouble("AccelPos",sensor.getAccelPos());
                     Console.printf("AccelPos: %f\n", sensor.getAccelPos());
                 }
             } else {
@@ -391,12 +424,29 @@ void loop() {
             if (myGamepad->miscHome()) {
                 if (!buttons[7]) {
                     buttons[7] = true;
+                    setMotorPower(0,0);
                     myGamepad->disconnect();
                 }
             } else {
                 buttons[7] = false;
             }
+
+            if (myGamepad->y()) {
+                if (!buttons[8]) {
+                    buttons[8] = true;
+                    char saveLocation[10] = "AccelPos ";
+                    for (int i = 0; i < NUM_ACCEL_POS; i ++) {
+                        saveLocation[8] = i+'0';
+                        preferences.putDouble(saveLocation, sensor.getAccelPos(i));
+                        Console.print(saveLocation);
+                        Console.printf(": %f\n", sensor.getAccelPos(i));
+                    }
+                }
+            } else {
+                buttons[8] = false;
+            }
         } else {
+            pidSetPoint = spinDirection * sensor.getVelocity();
             setMotorPower(0,0);
         }
     } else {
@@ -408,12 +458,5 @@ void loop() {
         if (disconnectedLEDPos >= 19)
             disconnectedLEDPos = 0;
     }
-    // The main loop must have some kind of "yield to lower priority task" event.
-    // Otherwise the watchdog will get triggered.
-    // If your main loop doesn't have one, just add a simple `vTaskDelay(1)`.
-    // Detailed info here:
-    // https://stackoverflow.com/questions/66278271/task-watchdog-got-triggered-the-tasks-did-not-reset-the-watchdog-in-time
     vTaskDelay(1);
-    //delay(15);
-    //ESP_LOGI("loop time", "%li\n", (long)(esp_timer_get_time()-loopStart));
 }

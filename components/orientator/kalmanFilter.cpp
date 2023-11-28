@@ -12,6 +12,14 @@ void kalmanFilter::adjustAngle(double angle) {
     estimateState.angle += angle*RAD2LSB;
 }
 
+void kalmanFilter::adjustVelocity(double velocity) {
+    estimateState.angularVelocity += velocity;
+}
+
+void kalmanFilter::adjustAccel(double accel) {
+    estimateState.angularAcceleration += accel;
+}
+
 void kalmanFilter::makeMeasurement(double angle, double angularVelocity, double variance_A, double variance_AV) {
     systemState newState;
     newState.time = esp_timer_get_time();
@@ -51,12 +59,12 @@ void kalmanFilter::update() {
     double K_AV = estimateState.variance_AV / (estimateState.variance_AV + measurmentState.variance_AV);
 
     estimateState.angle += K_A*constrainAngle(measurmentState.angle - estimateState.angle);
+    estimateState.angularAcceleration += 0.1*K_AV*(measurmentState.angularVelocity - estimateState.angularVelocity)/deltaTime;
     estimateState.angularVelocity += K_AV*(measurmentState.angularVelocity - estimateState.angularVelocity);
-    estimateState.angularAcceleration += K_AV*(measurmentState.angularVelocity - estimateState.angularVelocity)/deltaTime;
 
     estimateState.variance_A *= 1-K_A;
     estimateState.variance_AV *= 1-K_AV;
-    estimateState.variance_AA *= pow(1-K_AV, 2);
+    estimateState.variance_AA *= pow(1-K_AV, 0.5);
 }
 
 int32_t kalmanFilter::constrainAngle(int32_t input) {

@@ -10,4 +10,4 @@ endif()
 
 idf_component_register(SRCS "${srcs}"
                     INCLUDE_DIRS "."
-                    REQUIRES "${requires}" "DShotRMT" "ADXL375" "HD107S" "POVDisplay" "orientator")
+                    REQUIRES "${requires}" "DShotRMT" "ADXL375" "HD107S" "POVDisplay" "orientator" "QuickPID")
