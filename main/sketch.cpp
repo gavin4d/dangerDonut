@@ -40,7 +40,7 @@
 
 #define CONTROLLER_RESPONSE_TIMEOUT 3000000U
 #define STICK_DEAD_ZONE 0.1
-#define SPIN_THRESHOLD 10
+#define SPIN_THRESHOLD 13
 #define DRIVE_SENSITIVITY 0.1
 #define TURN_SENSITIVITY 0.015
 #define MELTY_SENSITIVITY 0.25
@@ -56,7 +56,7 @@ bool buttons[9] = {false, false, false, false, false, false, false, false, false
 bool controller_idle = false;
 int spinDirection = 1; // 1: clockwise, -1: withershin
 double spin_power = 0;
-double offset = 0.15;
+double offset[2] = {-0.025, 0.15};
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
 
@@ -76,6 +76,7 @@ ADXL375 ADXL;
 orientator sensor;
 HD107S LED;
 POVDisplay display;
+double targetSpeed = 0;
 float pidInput, pidOutput, pidSetPoint;
 float Kp = 0.004, Ki = 0.005, Kd = 0.0001; 
 QuickPID pid(&pidInput, &pidOutput, &pidSetPoint);
@@ -261,7 +262,7 @@ void setup() {
     pidSetPoint = 0;
     pid.SetTunings(Kp, Ki, Kd);
     pid.SetMode(pid.Control::automatic);
-    pid.SetOutputLimits(-1,1);
+    pid.SetOutputLimits(0,1);
     pid.SetSampleTimeUs(4000);
 }
 
@@ -282,7 +283,9 @@ void loop() {
         double logVelocity_e = 0;
         double logAccel_e = 0;
         sensor.update(logAngle, logVelocity, logAngle_e, logVelocity_e, logAccel_e);
-        pidInput = spinDirection * sensor.getVelocity();
+
+        //Console.printf("%03f\n", sensor.getZSign());
+        pidInput = sensor.getVelocity();
         double previousPower = pidOutput;
         pid.Compute();
 
@@ -294,9 +297,12 @@ void loop() {
             float x = ((float)myGamepad->axisX())/512;
             float r = ((float)myGamepad->axisRX())/512;
 
-            pidSetPoint = velocityFollow(pidSetPoint, VELOCITY_MAX*(float)(myGamepad->throttle() - myGamepad->brake())/1024, deltaTime);
+            targetSpeed = velocityFollow(targetSpeed, VELOCITY_MAX*(float)(myGamepad->throttle() - myGamepad->brake())/1024, deltaTime);
+            pidSetPoint = abs(targetSpeed);
 
-            spinDirection = copysignf(1.0, pidSetPoint);
+            spinDirection = sensor.getZSign()*copysignf(1.0, targetSpeed);
+            pidOutput = copysignf(pidOutput, spinDirection);
+
             if (abs(pidSetPoint) < SPIN_THRESHOLD) { // run in tank drive if not spinning
                 if (abs(y) > STICK_DEAD_ZONE) {
                     left_power += y * DRIVE_SENSITIVITY;
@@ -311,14 +317,15 @@ void loop() {
                 //ESP_LOGI("pid", "setPoint: %f, input: %f, output: %f", pidSetPoint, pidInput, pidOutput);
                 float hypot = hypotf(x,y);
                 if (hypot < STICK_DEAD_ZONE) hypot = 0;
-                const float theta = atan2f(y,x) + spinDirection*offset*2*PI;
+                float theta = atan2f(y,x) + offset[(spinDirection+1)/2]*2*PI;
+                if (sensor.getZSign() < 0) theta += PI; // reverse controls when flipped
                 const float meltyPower = MELTY_SENSITIVITY*hypot*sin(spinDirection*sensor.getAngle() + theta);
                 left_power = pidOutput + meltyPower;
                 right_power = pidOutput - meltyPower;
 
                 if (abs(r) > STICK_DEAD_ZONE) {
-                    double turnAmount = MELTY_TURN_SENSITIVITY*r*deltaTime;
-                    sensor.adjustAngle(-spinDirection*turnAmount);
+                    double turnAmount = -MELTY_TURN_SENSITIVITY*r*deltaTime;
+                    sensor.adjustAngle(spinDirection*turnAmount);
                 }
             }
 
@@ -384,8 +391,8 @@ void loop() {
             if (myGamepad->left()) {
                 if (!buttons[1]) {
                     buttons[1] = true;
-                    offset = (offset + 0.025)-floor(offset + 0.025);
-                    Console.printf("offset: %f\n", sensor.getOffset());
+                    offset[(spinDirection+1)/2] += 0.025;
+                    Console.printf("offset: %f\n", offset[(spinDirection+1)/2]);
                 }
             } else {
                 buttons[1] = false;
@@ -394,8 +401,8 @@ void loop() {
             if (myGamepad->right()) {
                 if (!buttons[2]) {
                     buttons[2] = true;
-                    offset = (offset - 0.025)-floor(offset - 0.025);
-                    Console.printf("offset: %f\n", sensor.getOffset());
+                    offset[(spinDirection+1)/2] -= 0.025;
+                    Console.printf("offset: %f\n", offset[(spinDirection+1)/2]);
                 }
             } else {
                 buttons[2] = false;
@@ -446,10 +453,12 @@ void loop() {
                 buttons[8] = false;
             }
         } else {
-            pidSetPoint = spinDirection * sensor.getVelocity();
+            pidSetPoint = velocityFollow(pidSetPoint, 0, deltaTime);
+            pid.SetOutputSum(0);
             setMotorPower(0,0);
         }
     } else {
+        setMotorPower(0,0);
         sensor.stopZeroCrossCallback();
         display.clearStrip();
         display.setStripPixel(floor(abs(disconnectedLEDPos-9)), 0xffff0000);

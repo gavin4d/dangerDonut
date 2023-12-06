@@ -25,6 +25,8 @@ class orientator {
         //boolean updatePeriod();
         //boolean updateOrientation();
         double getAngle();
+        double getZAccel();
+        double getZSign();
         void setZeroCrossCallback(void(* callback)());
         void stopZeroCrossCallback();
         void setOnStopCallback(void(* callback)());
@@ -48,6 +50,7 @@ class orientator {
         ADXL375 accel;
         double accelPos[NUM_ACCEL_POS] = {0.030};
         double offset = 0;
+        double zAccel = 0;
         static double rotationPeriod; // milliseconds
         double angularVelocity; // radians per second
         uint64_t zeroCrossingTime = 0; // time stamp of last zero crossing
