@@ -7,6 +7,8 @@ ADXL375::ADXL375() {
 }
 
 ADXL375::~ADXL375() {
+    free(rx_buffer);
+    free(tx_buffer);
 }
 
 /**************************************************************************/
@@ -183,16 +185,26 @@ int16_t ADXL375::getZ(void) { return read16(ADXL3XX_REG_DATAZ0); }
     @return True if the operation was successful, otherwise false.
 */
 /**************************************************************************/
-bool ADXL375::getXYZ(int16_t *x, int16_t *y, int16_t *z) {
-//   int16_t buffer[] = {0, 0, 0};
-//   Adafruit_BusIO_Register reg_obj = Adafruit_BusIO_Register(
-//       i2c_dev, spi_dev, AD8_HIGH_TOREAD_AD7_HIGH_TOINC, ADXL3XX_REG_DATAX0, 6);
-//   if (!reg_obj.read((uint8_t *)&buffer, 6))
-//     return false;
-//   x = buffer[0];
-//   y = buffer[1];
-//   z = buffer[2];
-  return true;
+bool ADXL375::getXYZ(int16_t &x, int16_t &y, int16_t &z) { // 30 us
+    *tx_buffer = ADXL3XX_REG_DATAX0 | ADXL3XX_READ | ADXL3XX_MULTIPLE_BYTES;
+    spi_transaction_t transaction;
+    transaction.flags = 0;
+    transaction.addr = 0;
+    transaction.length = 8*7;
+    transaction.rxlength = 0; // same as length
+    transaction.tx_buffer = tx_buffer;
+    transaction.rx_buffer = rx_buffer;
+
+    ret=spi_device_acquire_bus(device, portMAX_DELAY);
+    assert(ret==ESP_OK);
+    ret=spi_device_polling_transmit(device, &transaction);
+    assert(ret==ESP_OK);
+    spi_device_release_bus(device);
+
+    x = (*(rx_buffer+1) | *(rx_buffer+2) << 8);
+    y = (*(rx_buffer+3) | *(rx_buffer+4) << 8);
+    z = (*(rx_buffer+5) | *(rx_buffer+6) << 8);
+    return true;
 }
 
 /**************************************************************************/
@@ -203,10 +215,21 @@ bool ADXL375::getXYZ(int16_t *x, int16_t *y, int16_t *z) {
     @return True if the operation was successful, otherwise false.
 */
 /**************************************************************************/
-bool ADXL375::getXY(int16_t *x, int16_t *y) {
-    // TODO: use multiple byte read to prevent two transsactions
-    *x = getX();
-    *y = getY();
+bool ADXL375::getXY(int16_t &x, int16_t &y) {
+    *tx_buffer = ADXL3XX_REG_DATAX0 | ADXL3XX_READ | ADXL3XX_MULTIPLE_BYTES;
+    spi_transaction_t transaction;
+    transaction.flags = 0;
+    transaction.addr = 0;
+    transaction.length = 8*5;
+    transaction.rxlength = 0; // same as length
+    transaction.tx_buffer = tx_buffer;
+    transaction.rx_buffer = rx_buffer;
+
+    ret=spi_device_polling_transmit(device, &transaction);
+    assert(ret==ESP_OK);
+
+    x = (*(rx_buffer+1) | *(rx_buffer+2) << 8);
+    y = (*(rx_buffer+3) | *(rx_buffer+4) << 8);
     return true;
 }
 
@@ -217,6 +240,9 @@ bool ADXL375::getXY(int16_t *x, int16_t *y) {
 */
 /**************************************************************************/
 bool ADXL375::setup(adxl375_spi_config_t config) {
+
+    rx_buffer = (uint8_t*)heap_caps_aligned_alloc(32, 7, MALLOC_CAP_DMA);
+    tx_buffer = (uint8_t*)heap_caps_aligned_alloc(32, 7, MALLOC_CAP_DMA);
 
     DMAChannel = config.DMAChannel;
     SPIHost = config.SPIHost;
@@ -248,7 +274,7 @@ bool ADXL375::setup(adxl375_spi_config_t config) {
 
     writeRegister(ADXL3XX_REG_OFSX, (uint8_t)(0));
     writeRegister(ADXL3XX_REG_OFSY, (uint8_t)(0));
-    writeRegister(ADXL3XX_REG_OFSZ, (uint8_t)(6));
+    writeRegister(ADXL3XX_REG_OFSZ, (uint8_t)(7));
 
     // Set measurement frequency
     writeRegister(ADXL3XX_REG_BW_RATE, 0b00001100);

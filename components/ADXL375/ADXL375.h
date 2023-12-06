@@ -2,6 +2,7 @@
 #define ADXL375_H
 
 #include "driver/spi_master.h"
+#include "esp_heap_caps.h"
 
 /*=========================================================================
     REGISTERS
@@ -92,7 +93,7 @@ struct adxl375_spi_config_t{
     uint8_t mosiPin;
     uint8_t clockPin;
     uint8_t csPin;
-    uint32_t clockSpeed = 20000000;
+    uint32_t clockSpeed = 20000000; // this is 4 times faster than it should be able to do, but it works
     uint8_t DMAChannel = SPI_DMA_CH_AUTO;
     spi_host_device_t SPIHost = SPI2_HOST;
 };
@@ -107,6 +108,8 @@ private:
     spi_bus_config_t bus_config;
     spi_device_interface_config_t dev_config;
     spi_device_handle_t device;
+    uint8_t *rx_buffer;
+    uint8_t *tx_buffer;
 public:
     ADXL375();
     ~ADXL375();
@@ -120,8 +123,8 @@ public:
     int16_t getX(void);
     int16_t getY(void);
     int16_t getZ(void);
-    bool getXY(int16_t *x, int16_t *y);
-    bool getXYZ(int16_t *x, int16_t *y, int16_t *z);
+    bool getXY(int16_t &x, int16_t &y);
+    bool getXYZ(int16_t &x, int16_t &y, int16_t &z);
     bool setup(adxl375_spi_config_t config);
 };
 
