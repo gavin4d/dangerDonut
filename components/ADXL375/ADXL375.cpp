@@ -156,7 +156,7 @@ uint8_t ADXL375::checkInterrupts(void) {
     @return The 16-bit signed value for the X axis
 */
 /**************************************************************************/
-int16_t ADXL375::getX(void) { return read16(ADXL3XX_REG_DATAX0); }
+int16_t ADXL375::getX(void) { return read16(ADXL3XX_REG_DATAX0) + xOffset; }
 
 /**************************************************************************/
 /*!
@@ -165,7 +165,7 @@ int16_t ADXL375::getX(void) { return read16(ADXL3XX_REG_DATAX0); }
     @return The 16-bit signed value for the Y axis
 */
 /**************************************************************************/
-int16_t ADXL375::getY(void) { return read16(ADXL3XX_REG_DATAY0); }
+int16_t ADXL375::getY(void) { return read16(ADXL3XX_REG_DATAY0) + yOffset; }
 
 /**************************************************************************/
 /*!
@@ -174,7 +174,7 @@ int16_t ADXL375::getY(void) { return read16(ADXL3XX_REG_DATAY0); }
     @return The 16-bit signed value for the Z axis
 */
 /**************************************************************************/
-int16_t ADXL375::getZ(void) { return read16(ADXL3XX_REG_DATAZ0); }
+int16_t ADXL375::getZ(void) { return read16(ADXL3XX_REG_DATAZ0) + zOffset; }
 
 /**************************************************************************/
 /*!
@@ -201,9 +201,9 @@ bool ADXL375::getXYZ(int16_t &x, int16_t &y, int16_t &z) { // 30 us
     assert(ret==ESP_OK);
     spi_device_release_bus(device);
 
-    x = (*(rx_buffer+1) | *(rx_buffer+2) << 8);
-    y = (*(rx_buffer+3) | *(rx_buffer+4) << 8);
-    z = (*(rx_buffer+5) | *(rx_buffer+6) << 8);
+    x = (*(rx_buffer+1) | *(rx_buffer+2) << 8) + xOffset;
+    y = (*(rx_buffer+3) | *(rx_buffer+4) << 8) + yOffset;
+    z = (*(rx_buffer+5) | *(rx_buffer+6) << 8) + zOffset;
     return true;
 }
 
@@ -228,8 +228,8 @@ bool ADXL375::getXY(int16_t &x, int16_t &y) {
     ret=spi_device_polling_transmit(device, &transaction);
     assert(ret==ESP_OK);
 
-    x = (*(rx_buffer+1) | *(rx_buffer+2) << 8);
-    y = (*(rx_buffer+3) | *(rx_buffer+4) << 8);
+    x = (*(rx_buffer+1) | *(rx_buffer+2) << 8) + xOffset;
+    y = (*(rx_buffer+3) | *(rx_buffer+4) << 8) + yOffset;
     return true;
 }
 
@@ -259,6 +259,9 @@ bool ADXL375::setup(adxl375_spi_config_t config) {
     dev_config.mode = 3;
     dev_config.spics_io_num = config.csPin;
     dev_config.queue_size = 10;
+    xOffset = config.xOffset;
+    yOffset = config.yOffset;
+    zOffset = config.zOffset;
 
     ret=spi_bus_initialize(SPIHost, &bus_config, DMAChannel);
     assert(ret==ESP_OK);
@@ -274,7 +277,7 @@ bool ADXL375::setup(adxl375_spi_config_t config) {
 
     writeRegister(ADXL3XX_REG_OFSX, (uint8_t)(0));
     writeRegister(ADXL3XX_REG_OFSY, (uint8_t)(0));
-    writeRegister(ADXL3XX_REG_OFSZ, (uint8_t)(7));
+    writeRegister(ADXL3XX_REG_OFSZ, (uint8_t)(0));
 
     // Set measurement frequency
     writeRegister(ADXL3XX_REG_BW_RATE, 0b00001100);

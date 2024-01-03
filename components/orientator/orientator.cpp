@@ -46,12 +46,28 @@ bool orientator::getIRData(int i) {
     return IRData[i];
 }
 
-double orientator::getZAccel() {
-    return -zAccel*LSB2G_MULTIPLIER;
+double orientator::getXSign() {
+    return std::copysign(1, -xAccel);
+}
+
+double orientator::getXAccel() {
+    return -xAccel*LSB2G_MULTIPLIER;
+}
+
+double orientator::getYSign() {
+    return std::copysign(1, yAccel);
+}
+
+double orientator::getYAccel() {
+    return yAccel*LSB2G_MULTIPLIER;
 }
 
 double orientator::getZSign() {
     return std::copysign(1, -zAccel);
+}
+
+double orientator::getZAccel() {
+    return -zAccel*LSB2G_MULTIPLIER;
 }
 
 void orientator::setOffset(double offset) {
@@ -207,9 +223,12 @@ boolean orientator::getAccelVelocity(double& accelVelocity) {
     int16_t y;
     int16_t z;
     if (!accel.getXYZ(x, y, z)) return false; // return false if read fails
-    zAccel += 0.01*(z - zAccel); // rolling average of z axis accel
-    double normAccel = hypot(x+X_ZERO_OFFSET,y+Y_ZERO_OFFSET);
+    double normAccel = hypot(x,y);
     accelVelocity = sqrt(normAccel*LSB2MPS2_MULTIPLIER/getAproxAccelPos()); // radians per second
+
+    xAccel += 0.01*(x - xAccel); // rolling average of x axis accel
+    yAccel += 0.01*(y - yAccel); // rolling average of y axis accel
+    zAccel += 0.01*(z - zAccel); // rolling average of z axis accel
 
     // report sensor error when maxing out the sensor
     if (normAccel*LSB2G_MULTIPLIER > 280) return false;

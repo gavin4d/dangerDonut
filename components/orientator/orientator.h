@@ -7,8 +7,6 @@
 #include <bitset>
 #include "kalmanFilter.h"
 #define IR_DATA_SIZE 500
-#define X_ZERO_OFFSET -10.47748815
-#define Y_ZERO_OFFSET -7.372037915
 #define VELOCITY_MAX 290
 
 #define NUM_ACCEL_POS 10
@@ -25,6 +23,10 @@ class orientator {
         //boolean updatePeriod();
         //boolean updateOrientation();
         double getAngle();
+        double getXAccel();
+        double getXSign();
+        double getYAccel();
+        double getYSign();
         double getZAccel();
         double getZSign();
         void setZeroCrossCallback(void(* callback)());
@@ -50,6 +52,8 @@ class orientator {
         ADXL375 accel;
         double accelPos[NUM_ACCEL_POS] = {0.030};
         double offset = 0;
+        double xAccel = 0;
+        double yAccel = 0;
         double zAccel = 0;
         static double rotationPeriod; // milliseconds
         double angularVelocity; // radians per second

@@ -9,7 +9,7 @@
 #define ROT2LSB 65536
 #define LSB2ROT 1/65536
 
-#define PROCESS_NOISE 0.005 // trust the process
+#define PROCESS_NOISE 0.003 // trust the process
 
 // State of the system
 struct systemState{

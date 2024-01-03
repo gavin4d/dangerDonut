@@ -96,6 +96,9 @@ struct adxl375_spi_config_t{
     uint32_t clockSpeed = 20000000; // this is 4 times faster than it should be able to do, but it works
     uint8_t DMAChannel = SPI_DMA_CH_AUTO;
     spi_host_device_t SPIHost = SPI2_HOST;
+    int16_t xOffset = 0;
+    int16_t yOffset = 0;
+    int16_t zOffset = 0;
 };
 
 class ADXL375 {
@@ -110,6 +113,9 @@ private:
     spi_device_handle_t device;
     uint8_t *rx_buffer;
     uint8_t *tx_buffer;
+    int16_t xOffset;
+    int16_t yOffset;
+    int16_t zOffset;
 public:
     ADXL375();
     ~ADXL375();

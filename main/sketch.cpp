@@ -48,7 +48,7 @@
 #define MAX_ACCELERATION 150
 #define JERK_COMPENSATION 400
 
-#define NUM_DECORATIONS 3
+#define NUM_DECORATIONS 4
 
 GamepadPtr myGamepad;
 DShotRMT esc_l, esc_r;
@@ -77,6 +77,7 @@ orientator sensor;
 HD107S LED;
 POVDisplay display;
 double targetSpeed = 0;
+int flipped = 1;
 float pidInput, pidOutput, pidSetPoint;
 float Kp = 0.004, Ki = 0.005, Kd = 0.0001; 
 QuickPID pid(&pidInput, &pidOutput, &pidSetPoint);
@@ -147,16 +148,17 @@ void zeroHeadingCallback() {
     uint32_t color = 0xFFFFFFFF;
     if (getBattVoltage() < 6.5) color = 0xFFFF2222;
     switch (decor) {
-    case 0:
+    case 0: // RPM
         if (RPM >= 1000) display.drawDigit(28, 0, RPM/1000 % 10, color);
         if (RPM >= 100) display.drawDigit(35, 0, RPM/100 % 10, color);
         if (RPM >= 10) display.drawDigit(43, 0, RPM/10 % 10, color);
         display.drawDigit(50, 0, RPM % 10, color);
         break;
-    case 1:
+    case 1: // donut
         display.drawSprite(0,0,11);
         break;
-    case 2:
+    case 2: // nyan cat
+        if (animation < 0) animation = 83;
         if (((int)(animation + 2) % 12) < 4) display.drawSprite(20, 4, 17-((int)(animation + 2) % 12));
         if (((int)(animation + 8) % 12) < 4) display.drawSprite(64, 0, 17-((int)(animation + 8) % 12));
         if (((int)(animation + 4) % 12) < 4) display.drawSprite(47, 4, 17-((int)(animation + 4) % 12));
@@ -167,9 +169,14 @@ void zeroHeadingCallback() {
             display.drawSprite(animation,0,13);
         }
         animation -= period/84;
-        if (animation < 0) animation = 83;
         break;
-    default:
+    case 3: // pride flags
+        if (animation >= 9) animation = 0;
+        for (int i = 0; i < 84; i++)
+            display.drawSprite(i, 0, 18 + (int)animation);
+        animation += period/4000;
+        break;
+    default: // debug
         display.drawSprite(40,0,10);
         break;
     }
@@ -207,6 +214,16 @@ float velocityFollow(float current, float target, float deltaTime) {
 // Arduino setup function. Runs in CPU 1
 void setup() {
 
+    preferences.begin("config");
+    // preferences.putInt("XOffset", -9);
+    // preferences.putInt("YOffset", -6);
+    // preferences.putInt("ZOffset", 15);
+
+    Console.println("Offsets:");
+    Console.printf("X: %d\n", preferences.getInt("XOffset"));
+    Console.printf("Y: %d\n", preferences.getInt("YOffset"));
+    Console.printf("Z: %d\n", preferences.getInt("ZOffset"));
+
     hd107s_config_t LED_config;
     LED_config.dataPin = LED_DATA_PIN;
     LED_config.clockPin = LED_CLOCK_PIN;
@@ -222,6 +239,10 @@ void setup() {
     adxl_config.misoPin = ADXL_MISO_PIN;
     adxl_config.mosiPin = ADXL_MOSI_PIN;
     adxl_config.csPin = ADXL_CS_PIN;
+    adxl_config.xOffset = preferences.getInt("XOffset", 0);
+    adxl_config.yOffset = preferences.getInt("YOffset", 0);
+    adxl_config.zOffset = preferences.getInt("ZOffset", 0);
+
     Console.println("testing ADXL");
     if (ADXL.setup(adxl_config)) {
         Console.println("adxl375 sensor found");
@@ -244,15 +265,11 @@ void setup() {
     sensor.setZeroCrossCallback(&zeroHeadingCallback);
     sensor.setOnStopCallback(&onStopCallback);
 
-    preferences.begin("config");
     char readLocation[10] = "AccelPos ";
     Console.println("Accel config:");
     for (int i = 0; i < NUM_ACCEL_POS; i++) {
         readLocation[8] = i+'0';
-        if (isnan(preferences.getDouble(readLocation)))
-            sensor.setAccelPos(0.03, i);
-        else
-            sensor.setAccelPos(preferences.getDouble(readLocation), i);
+        sensor.setAccelPos(preferences.getDouble(readLocation, 0.03), i);
         Console.print(readLocation);
         Console.printf(": %f\n", preferences.getDouble(readLocation));
     }
@@ -283,11 +300,14 @@ void loop() {
         double logVelocity_e = 0;
         double logAccel_e = 0;
         sensor.update(logAngle, logVelocity, logAngle_e, logVelocity_e, logAccel_e);
+        //ESP_LOGI("imu", "x: %f, y: %f, z: %f", -sensor.getXAccel()/LSB2G_MULTIPLIER, sensor.getYAccel()/LSB2G_MULTIPLIER, -sensor.getZAccel()/LSB2G_MULTIPLIER);
 
         //Console.printf("%03f\n", sensor.getZSign());
         pidInput = sensor.getVelocity();
         double previousPower = pidOutput;
         pid.Compute();
+        if (sensor.getVelocity() < 75)
+            flipped = sensor.getZSign();
 
         if (!controller_idle) {
 
@@ -300,7 +320,7 @@ void loop() {
             targetSpeed = velocityFollow(targetSpeed, VELOCITY_MAX*(float)(myGamepad->throttle() - myGamepad->brake())/1024, deltaTime);
             pidSetPoint = abs(targetSpeed);
 
-            spinDirection = sensor.getZSign()*copysignf(1.0, targetSpeed);
+            spinDirection = flipped*copysignf(1.0, targetSpeed);
             pidOutput = copysignf(pidOutput, spinDirection);
 
             if (abs(pidSetPoint) < SPIN_THRESHOLD) { // run in tank drive if not spinning
@@ -318,7 +338,7 @@ void loop() {
                 float hypot = hypotf(x,y);
                 if (hypot < STICK_DEAD_ZONE) hypot = 0;
                 float theta = atan2f(y,x) + offset[(spinDirection+1)/2]*2*PI;
-                if (sensor.getZSign() < 0) theta += PI; // reverse controls when flipped
+                if (flipped < 0) theta += PI; // reverse controls when flipped
                 const float meltyPower = MELTY_SENSITIVITY*hypot*sin(spinDirection*sensor.getAngle() + theta);
                 left_power = pidOutput + meltyPower;
                 right_power = pidOutput - meltyPower;
@@ -338,6 +358,28 @@ void loop() {
             if (myGamepad->x()) { // self right using wheel's inertia
                 left_power = 1;
                 right_power = -1;
+            }
+
+            if (myGamepad->up()) {
+                double angle = atan2(sensor.getYAccel(), sensor.getXAccel());
+                if (angle < -PI/4 || angle > 3*PI/4) {
+                    left_power = -1;
+                    right_power = 1;
+                } else {
+                    left_power = 1;
+                    right_power = -1;
+                }
+            }
+
+            if (myGamepad->down()) {
+                double angle = atan2(sensor.getYAccel(), sensor.getXAccel());
+                if (angle < -PI/4 || angle > 3*PI/4) {
+                    left_power = 1;
+                    right_power = -1;
+                } else {
+                    left_power = -1;
+                    right_power = 1;
+                }
             }
 
             setMotorPower(left_power, right_power);
@@ -369,6 +411,7 @@ void loop() {
             if (myGamepad->l1()) {
                 if (!buttons[5]) {
                     buttons[5] = true;
+                    animation = 0;
                     decor --;
                     if (decor < 0)
                         decor = NUM_DECORATIONS-1;
@@ -380,6 +423,7 @@ void loop() {
             if (myGamepad->r1()) {
                 if (!buttons[6]) {
                     buttons[6] = true;
+                    animation = 0;
                     decor ++;
                     if (decor >= NUM_DECORATIONS)
                         decor = 0;
@@ -391,8 +435,8 @@ void loop() {
             if (myGamepad->left()) {
                 if (!buttons[1]) {
                     buttons[1] = true;
-                    offset[(spinDirection+1)/2] += 0.025;
-                    Console.printf("offset: %f\n", offset[(spinDirection+1)/2]);
+                    sensor.setAccelPos(sensor.getAccelPos() - 0.00005);
+                    Console.printf("AccelPos: %f\n", sensor.getAccelPos());
                 }
             } else {
                 buttons[1] = false;
@@ -401,31 +445,11 @@ void loop() {
             if (myGamepad->right()) {
                 if (!buttons[2]) {
                     buttons[2] = true;
-                    offset[(spinDirection+1)/2] -= 0.025;
-                    Console.printf("offset: %f\n", offset[(spinDirection+1)/2]);
-                }
-            } else {
-                buttons[2] = false;
-            }
-
-            if (myGamepad->up()) {
-                if (!buttons[3]) {
-                    buttons[3] = true;
                     sensor.setAccelPos(sensor.getAccelPos() + 0.00005);
                     Console.printf("AccelPos: %f\n", sensor.getAccelPos());
                 }
             } else {
-                buttons[3] = false;
-            }
-
-            if (myGamepad->down()) {
-                if (!buttons[4]) {
-                    buttons[4] = true;
-                    sensor.setAccelPos(sensor.getAccelPos() - 0.00005);
-                    Console.printf("AccelPos: %f\n", sensor.getAccelPos());
-                }
-            } else {
-                buttons[4] = false;
+                buttons[2] = false;
             }
 
             if (myGamepad->miscHome()) {
