@@ -9,5 +9,4 @@ PCB/Beacon/production
 components/POVDisplay/input.png*
 managed_components/
 sdkconfig.old
-sdkconfig
 *.o
