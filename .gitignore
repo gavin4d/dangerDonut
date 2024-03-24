@@ -10,4 +10,5 @@ components/POVDisplay/input.png*
 components/POVDisplay/spriteSource/*.kra~
 managed_components/
 sdkconfig.old
+dependencies.lock
 *.o
