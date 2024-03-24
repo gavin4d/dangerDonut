@@ -31,7 +31,6 @@ void kalmanFilter::makeMeasurement(double angle, double angularVelocity, double 
 }
 
 void kalmanFilter::makeMeasurement(systemState state) {
-    state.angle = (double)state.angle*RAD2LSB;
     measurmentState = state;
 }
 

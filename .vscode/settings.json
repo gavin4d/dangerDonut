@@ -1,6 +1,6 @@
 {
     "idf.adapterTargetName": "esp32s3",
-    "idf.portWin": "COM10",
+    "idf.portWin": "COM5",
     "idf.flashType": "UART",
     "files.associations": {
         "uni_bt_le.h": "c",
@@ -8,7 +8,10 @@
         "chrono": "cpp",
         "*.ipp": "c",
         "*.tcc": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "regex": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

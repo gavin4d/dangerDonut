@@ -14,6 +14,7 @@
 #include <Preferences.h>
 #include <driver/adc.h>
 #include <QuickPID.h>
+#include <bt_log.h>
 
 #include "orientator.h"
 
@@ -81,6 +82,7 @@ int flipped = 1;
 float pidInput, pidOutput, pidSetPoint;
 float Kp = 0.004, Ki = 0.005, Kd = 0.0001; 
 QuickPID pid(&pidInput, &pidOutput, &pidSetPoint);
+bt_log logger;
 
 float getBattVoltage() {
     int voltageReading = 0;
@@ -270,8 +272,7 @@ void setup() {
     for (int i = 0; i < NUM_ACCEL_POS; i++) {
         readLocation[8] = i+'0';
         sensor.setAccelPos(preferences.getDouble(readLocation, 0.03), i);
-        Console.print(readLocation);
-        Console.printf(": %f\n", preferences.getDouble(readLocation));
+        Console.printf("%s: %f\n",readLocation , preferences.getDouble(readLocation));
     }
 
     adc2_config_channel_atten(ADC2_CHANNEL_1, ADC_ATTEN_6db);
@@ -281,6 +282,8 @@ void setup() {
     pid.SetMode(pid.Control::automatic);
     pid.SetOutputLimits(0,1);
     pid.SetSampleTimeUs(4000);
+
+    //logger.init();
 }
 
 // Arduino loop function. Runs in CPU 1

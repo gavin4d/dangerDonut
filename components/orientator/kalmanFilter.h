@@ -42,9 +42,10 @@ class kalmanFilter {
          * @param variance_AV variance estimate of the angular velocity measurement
          */
         void makeMeasurement(double angle, double angularVelocity, double variance_A, double variance_AV);
+
         /**
          * Input a measurement to the kalman filter for this cycle
-         * @param state measured state of the system
+         * @param state measured state of the system. Make sure angle is in LSBs
          */
         void makeMeasurement(systemState state);
 
