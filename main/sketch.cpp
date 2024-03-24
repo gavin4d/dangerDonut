@@ -40,7 +40,7 @@
 
 #define CONTROLLER_RESPONSE_TIMEOUT 3000000U
 #define STICK_DEAD_ZONE 0.1
-#define SPIN_THRESHOLD 13
+#define SPIN_THRESHOLD 0.02//13
 #define DRIVE_SENSITIVITY 0.1
 #define TURN_SENSITIVITY 0.015
 #define MELTY_SENSITIVITY 0.25
@@ -56,7 +56,7 @@ bool buttons[9] = {false, false, false, false, false, false, false, false, false
 bool controller_idle = false;
 int spinDirection = 1; // 1: clockwise, -1: withershin
 double spin_power = 0;
-double offset[2] = {-0.025, 0.15};
+double offset[2] = {-0.075, 0.15};
 esp_timer_create_args_t create_timer;
 esp_timer_handle_t test_timer;
 
@@ -80,7 +80,7 @@ double targetSpeed = 0;
 int flipped = 1;
 float pidInput, pidOutput, pidSetPoint;
 float Kp = 0.004, Ki = 0.005, Kd = 0.0001; 
-QuickPID pid(&pidInput, &pidOutput, &pidSetPoint);
+//QuickPID pid(&pidInput, &pidOutput, &pidSetPoint);
 
 float getBattVoltage() {
     int voltageReading = 0;
@@ -145,7 +145,7 @@ void zeroHeadingCallback() {
     if (period < 10 || period >= 500) return;
     int RPM = 60000/period; // min((int)round(sensor.getVelocity()/ACCEL_POS_SPREAD), NUM_ACCEL_POS-1);
     display.clear();
-    uint32_t color = 0xFFFFFFFF;
+    uint32_t color = 0xFF2255FF;
     if (getBattVoltage() < 6.5) color = 0xFFFF2222;
     switch (decor) {
     case 0: // RPM
@@ -276,11 +276,11 @@ void setup() {
 
     adc2_config_channel_atten(ADC2_CHANNEL_1, ADC_ATTEN_6db);
 
-    pidSetPoint = 0;
-    pid.SetTunings(Kp, Ki, Kd);
-    pid.SetMode(pid.Control::automatic);
-    pid.SetOutputLimits(0,1);
-    pid.SetSampleTimeUs(4000);
+    //pidSetPoint = 0;
+    //pid.SetTunings(Kp, Ki, Kd);
+    //pid.SetMode(pid.Control::automatic);
+    //pid.SetOutputLimits(0,1);
+    //pid.SetSampleTimeUs(4000);
 }
 
 // Arduino loop function. Runs in CPU 1
@@ -303,9 +303,9 @@ void loop() {
         //ESP_LOGI("imu", "x: %f, y: %f, z: %f", -sensor.getXAccel()/LSB2G_MULTIPLIER, sensor.getYAccel()/LSB2G_MULTIPLIER, -sensor.getZAccel()/LSB2G_MULTIPLIER);
 
         //Console.printf("%03f\n", sensor.getZSign());
-        pidInput = sensor.getVelocity();
+        //pidInput = sensor.getVelocity();
         double previousPower = pidOutput;
-        pid.Compute();
+        //pid.Compute();
         if (sensor.getVelocity() < 75)
             flipped = sensor.getZSign();
 
@@ -317,13 +317,14 @@ void loop() {
             float x = ((float)myGamepad->axisX())/512;
             float r = ((float)myGamepad->axisRX())/512;
 
-            targetSpeed = velocityFollow(targetSpeed, VELOCITY_MAX*(float)(myGamepad->throttle() - myGamepad->brake())/1024, deltaTime);
-            pidSetPoint = abs(targetSpeed);
+            //targetSpeed = velocityFollow(targetSpeed, VELOCITY_MAX*(float)(myGamepad->throttle() - myGamepad->brake())/1024, deltaTime);
+            //pidSetPoint = abs(targetSpeed);
 
-            spinDirection = flipped*copysignf(1.0, targetSpeed);
+            pidOutput = (float)(myGamepad->throttle() - myGamepad->brake())/1024;
+            spinDirection = flipped*copysignf(1.0, pidOutput);
             pidOutput = copysignf(pidOutput, spinDirection);
 
-            if (abs(pidSetPoint) < SPIN_THRESHOLD) { // run in tank drive if not spinning
+            if (abs(pidOutput) < SPIN_THRESHOLD) { // run in tank drive if not spinning
                 if (abs(y) > STICK_DEAD_ZONE) {
                     left_power += y * DRIVE_SENSITIVITY;
                     right_power -= y * DRIVE_SENSITIVITY;
@@ -477,8 +478,8 @@ void loop() {
                 buttons[8] = false;
             }
         } else {
-            pidSetPoint = velocityFollow(pidSetPoint, 0, deltaTime);
-            pid.SetOutputSum(0);
+            //pidSetPoint = velocityFollow(pidSetPoint, 0, deltaTime);
+            //pid.SetOutputSum(0);
             setMotorPower(0,0);
         }
     } else {
