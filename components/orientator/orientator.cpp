@@ -14,6 +14,8 @@ void (* orientator::zeroCrossCallback)() = nullptr;
 void (* orientator::onStopCallback)() = nullptr;
 double orientator::rotationPeriod = 0;
 
+using namespace std;
+
 orientator::orientator() {
 }
 
@@ -47,7 +49,7 @@ bool orientator::getIRData(int i) {
 }
 
 double orientator::getXSign() {
-    return std::copysign(1, -xAccel);
+    return copysign(1, -xAccel);
 }
 
 double orientator::getXAccel() {
@@ -55,7 +57,7 @@ double orientator::getXAccel() {
 }
 
 double orientator::getYSign() {
-    return std::copysign(1, yAccel);
+    return copysign(1, yAccel);
 }
 
 double orientator::getYAccel() {
@@ -63,7 +65,7 @@ double orientator::getYAccel() {
 }
 
 double orientator::getZSign() {
-    return std::copysign(1, -zAccel);
+    return copysign(1, -zAccel);
 }
 
 double orientator::getZAccel() {
@@ -129,7 +131,7 @@ double orientator::getAngle() {
     if (rotationPeriod == 0) return 0;
     uint32_t oneRotationTime = rotationPeriod*RESOLUTION;
     uint64_t timeSinceZero = (esp_timer_get_time() - zeroCrossingTime + (int)(offset*oneRotationTime));
-    return (double)(timeSinceZero % oneRotationTime)*2*PI/oneRotationTime;
+    return (double)(timeSinceZero % oneRotationTime)*2*M_PI/oneRotationTime;
 }
 
 // returns radians since last zero crossing
@@ -137,18 +139,25 @@ double orientator::getAngle(uint64_t zeroCrossingTime) {
     if (rotationPeriod == 0) return 0;
     uint32_t oneRotationTime = rotationPeriod*RESOLUTION;
     uint64_t timeSinceZero = (esp_timer_get_time() - zeroCrossingTime + (int)(offset*oneRotationTime));
-    return 2*PI*(double)(timeSinceZero % oneRotationTime)/oneRotationTime;
+    return 2*M_PI*(double)(timeSinceZero % oneRotationTime)/oneRotationTime;
 }
 
 void orientator::checkIRCallback(void *args) {
     IRData <<= 1;
-    IRData[0] = digitalRead(pin);
+    IRData[0] = gpio_get_level((gpio_num_t)pin);
 }
 
 void orientator::setup(uint8_t pin, ADXL375 accel) {
     orientator::pin = pin;
     orientator::accel = accel;
-    pinMode(pin, INPUT);
+    gpio_config_t io_conf = {};
+    io_conf.intr_type = GPIO_INTR_DISABLE;
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pin_bit_mask = (gpio_num_t)pin;
+    io_conf.pull_down_en = (gpio_pulldown_t)false;
+    io_conf.pull_up_en = (gpio_pullup_t)0;
+    gpio_config(&io_conf);
+
     esp_timer_create_args_t new_timer;
     new_timer.callback = &checkIRCallback;
     new_timer.dispatch_method = ESP_TIMER_TASK;
@@ -204,7 +213,7 @@ void orientator::update(double& angle, double& velocity, double& angleEstimate, 
 
     esp_timer_stop(zeroHeadingTimer);
     if (angularVelocity > 13) {
-        rotationPeriod = (double)(1000*2*PI)/angularVelocity;
+        rotationPeriod = (double)(1000*2*M_PI)/angularVelocity;
         zeroCrossingTime = esp_timer_get_time() - (double)currentState.angle*LSB2ROT*rotationPeriod*RESOLUTION;
         int64_t startDelay = zeroCrossingTime - esp_timer_get_time() - (int)(offset*rotationPeriod*RESOLUTION);
         if (startDelay < 0) startDelay = (startDelay % (int)(abs(rotationPeriod*RESOLUTION))) + (int)(abs(rotationPeriod*RESOLUTION));
@@ -218,7 +227,7 @@ void orientator::update(double& angle, double& velocity, double& angleEstimate, 
 
 }
 
-boolean orientator::getAccelVelocity(double& accelVelocity) {
+bool orientator::getAccelVelocity(double& accelVelocity) {
     int16_t x;
     int16_t y;
     int16_t z;
@@ -236,10 +245,10 @@ boolean orientator::getAccelVelocity(double& accelVelocity) {
     return true;
 }
 
-boolean orientator::getIRVelocity(double& IRVelocity) { // auto correlation
+bool orientator::getIRVelocity(double& IRVelocity) { // auto correlation
     //using namespace std;
-    boolean hasIncreased = false;
-    boolean foundPeak = false;
+    bool hasIncreased = false;
+    bool foundPeak = false;
     uint16_t lastsum = 0xffff; // init to max so first loop doesn't detect a increase
     uint16_t delay;
     for (delay = 0; delay < MAX_DELAY; delay ++) {
@@ -257,7 +266,7 @@ boolean orientator::getIRVelocity(double& IRVelocity) { // auto correlation
         }
         lastsum = sum;
     }
-    IRVelocity = 2*PI*RESOLUTION/(double)delay; // radians per second
+    IRVelocity = 2*M_PI*RESOLUTION/(double)delay; // radians per second
 
     if ((IRData << (IR_DATA_SIZE-SAMPLE_WINDOW)).count() < MIN_IR_DETECTION_PERCENT*SAMPLE_WINDOW) return false;
     if (SAMPLE_WINDOW - (IRData << (IR_DATA_SIZE-SAMPLE_WINDOW)).count() < MIN_IR_DETECTION_PERCENT*SAMPLE_WINDOW) return false;
@@ -265,7 +274,7 @@ boolean orientator::getIRVelocity(double& IRVelocity) { // auto correlation
     return foundPeak;
 }
 
-boolean orientator::getIROrientation(uint64_t& IROrientation) { // convolution
+bool orientator::getIROrientation(uint64_t& IROrientation) { // convolution
     if (rotationPeriod < 10 || rotationPeriod >= 500) return false;
     int numIRBits = IRData.count();
     if (numIRBits < MIN_IR_DETECTION_PERCENT*IR_DATA_SIZE || numIRBits > (1-MIN_IR_DETECTION_PERCENT)*IR_DATA_SIZE) return false;

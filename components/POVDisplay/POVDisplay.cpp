@@ -10,7 +10,7 @@ int POVDisplay::direction = 1;
 esp_timer_handle_t POVDisplay::writeLEDTimer;
 
 POVDisplay::POVDisplay(hd107s_config_t LEDConfig) {
-    LED.setup(LEDConfig);;
+    LED.setup(LEDConfig);
     esp_timer_create_args_t new_timer;
     new_timer.callback = &writeLEDColumn;
     new_timer.dispatch_method = ESP_TIMER_TASK;

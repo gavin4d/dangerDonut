@@ -1,11 +1,12 @@
 #ifndef ORIENTATOR_H
 #define ORIENTATOR_H
 
-#include <Arduino.h>
-#include <driver/timer.h>
+#include "esp_timer.h"
 #include <ADXL375.h>
 #include <bitset>
 #include "kalmanFilter.h"
+#include "math.h"
+#include "driver/gpio.h"
 #define IR_DATA_SIZE 500
 #define VELOCITY_MAX 290
 
@@ -70,9 +71,9 @@ class orientator {
         static void initCallback(void *args);
         static void zeroHeadingCallback(void *args);
         static void checkIRCallback(void *args);
-        boolean getIRVelocity(double& rotationPeriod);
-        boolean getAccelVelocity(double& rotationPeriod);
-        boolean getIROrientation(uint64_t& IROrientation);
+        bool getIRVelocity(double& rotationPeriod);
+        bool getAccelVelocity(double& rotationPeriod);
+        bool getIROrientation(uint64_t& IROrientation);
         double getAngle(uint64_t period);
 
 };

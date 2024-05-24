@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <esp_timer.h>
-#include "esp_dsp.h"
 
 #define LSB2DEG 360/65536
 #define DEG2LSB 65536/360

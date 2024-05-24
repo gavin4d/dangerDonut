@@ -28,7 +28,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
                 .uuid = BLE_UUID16_DECLARE(GATT_DATA_UUID),
                 .access_cb = gatt_svr_chr_access_data,
                 .val_handle = &data_handle,
-                .flags = BLE_GATT_CHR_F_NOTIFY,
+                .flags = BLE_GATT_CHR_F_NOTIFY | BLE_GATT_CHR_F_READ,
             }, {
                 /* Characteristic: Config */
                 .uuid = BLE_UUID16_DECLARE(GATT_CONFIG_UUID),
@@ -75,9 +75,14 @@ static int gatt_svr_chr_access_data(uint16_t conn_handle, uint16_t attr_handle,
     uuid = ble_uuid_u16(ctxt->chr->uuid);
 
     if (uuid == GATT_CONFIG_UUID) {
-        //rc = os_mbuf_append(ctxt->om, &config, sizeof(config));
+        rc = os_mbuf_append(ctxt->om, &config, sizeof(config));
+        return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+    }
 
-        //return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+    if (uuid == GATT_DATA_UUID) {
+        data.packetNumber = 0xffff;
+        rc = os_mbuf_append(ctxt->om, &data, sizeof(data));
+        return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
     }
 
     assert(0);

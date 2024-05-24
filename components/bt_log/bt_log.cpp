@@ -13,7 +13,7 @@ bt_log::data_t bt_log::data;
 
 static uint16_t conn_handle;
 
-static const char *device_name = "Danger Donut Diagnostics";
+static const char *device_name = "Danger Donut";
 
 static int gap_event(struct ble_gap_event *event, void *arg);
 
@@ -185,9 +185,14 @@ void bt_log::init() {
     }
     ESP_ERROR_CHECK(ret);
 
-    ESP_ERROR_CHECK(esp_nimble_hci_and_controller_init());
+    //ESP_ERROR_CHECK(esp_nimble_hci_and_controller_init());
 
-    nimble_port_init();
+    ret = nimble_port_init();
+    if (ret != ESP_OK) {
+        MODLOG_DFLT(ERROR, "Failed to init nimble %d \n", ret);
+        return;
+    }
+
     /* Initialize the NimBLE host configuration */
     ble_hs_cfg.sync_cb = on_sync;
     ble_hs_cfg.reset_cb = on_reset;

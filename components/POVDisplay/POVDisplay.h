@@ -1,8 +1,8 @@
 #ifndef POVDISPLAY_H
 #define POVDISPLAY_H
 
-#include <Arduino.h>
-#include <driver/timer.h>
+#include <stdint.h>
+#include "esp_timer.h"
 #include "HD107S.h"
 #include "frame.h"
 #include "imageData.h"

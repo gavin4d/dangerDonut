@@ -47,6 +47,7 @@ public:
         double rotationPeriod;
     } data;
 
+
     bt_log() {};
     ~bt_log() {};
 
